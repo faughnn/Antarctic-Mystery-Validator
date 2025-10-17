@@ -4,7 +4,7 @@
 
 David Martinez was promised the Station Commander position but it went to Dr. Sarah Chen instead. Bitter and resentful, Martinez sabotages the research server room during an incoming blizzard to destroy Sarah's climate research data and make her look incompetent. The explosion kills Dr. Tom Bradley instantly and cuts power, trapping Dr. James Wilson and Dr. Sarah Chen outside to freeze. The station splits into East Wing (Maria, Robert) and West Wing (Alex, Lisa, Hans, Martinez).
 
-A massive blizzard rages for weeks, keeping both wings completely isolated. Martinez realizes his sabotage killed three people but is too afraid to confess. Food runs out gradually, leading to desperation and paranoia. When the blizzard finally clears, contact between wings turns violent. Alex kills Robert in self-defense, then murders Lisa in delusional rage after discovering her with a radio. Consumed by guilt, Alex hangs himself. Hans discovers Martinez's confession and strangles him in fury, becoming the sole survivor.
+A massive blizzard rages for weeks, keeping both wings completely isolated. Martinez realizes his sabotage killed three people but is too afraid to confess. Food runs out gradually, leading to desperation and paranoia. When the blizzard finally clears, contact between wings turns violent. Alex kills Robert in self-defense, then murders Lisa in delusional rage after discovering her with a radio. Consumed by guilt, Alex walks naked into the whiteout to freeze. Hans discovers Martinez's confession and strangles him in fury, becoming the sole survivor.
 
 ---
 
@@ -126,10 +126,14 @@ Lisa fallen with head trauma, Alex holding fire extinguisher, David watching cal
 
 - **Dead:** Dr. Alex Petrov, David Martinez
 - **Present:** Hans Mueller
-- **Cause of Death:** Alex suicide by hanging, Martinez strangled
+- **Cause of Death:** Alex suicide by exposure (walked out naked into blizzard), Martinez strangled
 - **Responsible:** Alex (suicide), Hans (Martinez)
 
 ### Dialogue:
+
+**Hans:** "Close the damn door!"
+
+**Hans:** "What the hell is wrong with you people?!"
 
 **Martinez:** "I just wanted Sarah's job..."
 
@@ -140,7 +144,7 @@ Lisa fallen with head trauma, Alex holding fire extinguisher, David watching cal
 **Martinez:** "I was scared!"
 
 ### Frozen Scene:
-Alex hanging in background (already dead), Martinez being strangled by Hans' bare hands, Hans in a rage.
+Pile of Alex's discarded clothes on floor beside the now closed exterior door; through window Alex's naked figure barely visible shrinking into the whiteout; Martinez being strangled by Hans' bare hands, Hans in a rage.
 
 ---
 
@@ -154,7 +158,7 @@ Alex hanging in background (already dead), Martinez being strangled by Hans' bar
 - **Dr. Tom Bradley** - Chief Engineer
 - **Robert Miller** - Cook
 - **Hans Mueller** - Maintenance Technician
-- **David Martinez** - Pilot
+- **David Martinez** - Operations & Logistics Officer (passed over for Station Commander)
 
 **Sole Survivor:** Hans Mueller
 
