@@ -1,5 +1,7 @@
 # Antarctic Mystery Validator
 
+[![Mystery Validator](https://github.com/faughnn/Antarctic-Mystery-Validator/actions/workflows/validate.yml/badge.svg)](https://github.com/faughnn/Antarctic-Mystery-Validator/actions/workflows/validate.yml)
+
 A validation system for the Antarctic Station Alpha-7 mystery game. Ensures the mystery is logically solvable, consistent, and properly balanced.
 
 ## Quick Start
@@ -55,9 +57,35 @@ Antarctic-Mystery-Validator/
 ✅ **Scenes Have Characters** - No empty scenes
 ⚠️ **Dialogue Speakers Exist** - All dialogue speakers are valid characters (currently failing: 112 lines with empty speakers)
 
-## Testing Remotely with Claude Code Web
+## Remote Testing & Viewing Results
 
-Since you're using Claude Code Web, everything runs in the browser environment:
+### 🤖 Automated Testing (GitHub Actions)
+
+Every push automatically runs the validator. View results in multiple ways:
+
+1. **Status Badge** (top of this README)
+   - 🟢 Green = All tests passing
+   - 🔴 Red = Some tests failing
+
+2. **GitHub Actions Tab**
+   - Go to: https://github.com/faughnn/Antarctic-Mystery-Validator/actions
+   - Click on any workflow run
+   - See full Python output in the "Run Mystery Validator" step
+   - View the **Summary** tab for formatted results
+
+3. **Download Full Logs**
+   - On any workflow run page
+   - Click "Artifacts" section
+   - Download `validation-results` (text file with complete output)
+
+4. **Manual Trigger**
+   - Go to Actions tab → "Mystery Validator" workflow
+   - Click "Run workflow" button
+   - Select branch and run on demand
+
+### 💻 Local Testing (Claude Code Web)
+
+When working in Claude Code Web:
 
 1. **Quick Test**: Just run `./test.sh`
 2. **Direct Run**: `cd mystery_validator && python3 main.py`
@@ -80,6 +108,40 @@ for c in dead:
     print(f'  {c.name}: {c.cause_of_death} in scene {c.death_scene}')
 "
 ```
+
+## What You'll See in GitHub Actions
+
+When you visit the Actions tab, you'll see:
+
+```
+🧊 Antarctic Mystery Validator
+================================================================================
+
+Loading data files...
+✓ Loaded 60 characters
+✓ Loaded 295 scene evidence records
+✓ Loaded 275 dialogue lines
+
+Running validation checks...
+
+================================================================================
+VALIDATION RESULTS
+================================================================================
+
+✓ PASS - Everyone Appears
+      All 60 characters appear in at least one scene.
+
+✓ PASS - Death Scenes Valid
+      All 60 dead characters have valid death scenes.
+
+[... more results ...]
+```
+
+**The workflow will:**
+- ✅ Pass (green checkmark) if all validations pass
+- ❌ Fail (red X) if any validation fails
+- 📊 Show summary on the workflow summary page
+- 💾 Save full output as downloadable artifact
 
 ## Next Steps
 

@@ -1,0 +1,61 @@
+name: Mystery Validator
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Run Mystery Validator
+      id: validator
+      run: |
+        cd mystery_validator
+        echo "Running Antarctic Mystery Validator..."
+        python3 main.py | tee ../validation_output.txt
+        exit_code=${PIPESTATUS[0]}
+        echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
+        exit $exit_code
+      continue-on-error: true
+
+    - name: Upload validation results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: validation-results
+        path: validation_output.txt
+        retention-days: 30
+
+    - name: Comment validation status
+      if: always()
+      run: |
+        echo "## 🧊 Validation Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        cat validation_output.txt >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ steps.validator.outputs.exit_code }}" = "0" ]; then
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **All validations passed!**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **Some validations failed. See details above.**" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Set final status
+      if: steps.validator.outputs.exit_code != '0'
+      run: |
+        echo "Validation failed with exit code ${{ steps.validator.outputs.exit_code }}"
+        exit 1
