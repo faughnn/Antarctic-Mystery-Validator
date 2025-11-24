@@ -1,15 +1,36 @@
+from typing import Dict, Tuple
 
 
-def generate_simple_report(validation_results):
+def generate_simple_report(validation_results: Dict[str, Tuple[bool, str]]) -> None:
     """Generate a simple text report from validation results."""
-    print("Generating simple report...")
-    print("=" * 100)
+    print("=" * 80)
+    print("VALIDATION RESULTS")
+    print("=" * 80)
+    print()
+
+    passed_count = 0
+    failed_count = 0
 
     for validation_name, (passed, details) in validation_results.items():
-        status = "✓" if passed else "✗"
-        print(f"{status} {validation_name}")
-        if not passed:
-            print(f"Details: {details}")
-        print("-" * 100)
+        status = "✓ PASS" if passed else "✗ FAIL"
+        status_color = "\033[92m" if passed else "\033[91m"  # Green or Red
+        reset_color = "\033[0m"
 
+        print(f"{status_color}{status}{reset_color} - {validation_name}")
 
+        if details:
+            # Indent details for readability
+            for line in details.split('\n'):
+                if line.strip():
+                    print(f"      {line}")
+
+        print()
+
+        if passed:
+            passed_count += 1
+        else:
+            failed_count += 1
+
+    print("=" * 80)
+    print(f"Summary: {passed_count} passed, {failed_count} failed")
+    print("=" * 80)
