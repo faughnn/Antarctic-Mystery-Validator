@@ -119,6 +119,66 @@ def main():
     print()
 
     print("=" * 80)
+    print("DETAILED CHARACTER BREAKDOWN")
+    print("=" * 80)
+    print()
+
+    # Create a combined list with all character stats
+    char_details = []
+    for char_name in sorted(characters.keys()):
+        char_data = clue_analysis[char_name]
+        scenes = appearance_analysis[char_name]
+        clue_types = char_data['clue_types']
+
+        char_details.append({
+            'name': char_name,
+            'difficulty': char_data['difficulty'],
+            'total_clues': char_data['total_clues'],
+            'scenes': scenes,
+            'visual': clue_types['visual'],
+            'dialogue': clue_types['dialogue'],
+            'contextual': clue_types['contextual'],
+            'relationship': clue_types['relationship'],
+            'role': clue_types['role']
+        })
+
+    # Sort by difficulty (VERY HARD first, then HARD, MEDIUM, EASY) and then by clue count
+    difficulty_order = {'VERY HARD': 0, 'HARD': 1, 'MEDIUM': 2, 'EASY': 3}
+    char_details.sort(key=lambda x: (difficulty_order[x['difficulty']], x['total_clues'], x['name']))
+
+    # Print header
+    print(f"{'Character':<30} {'Diff':<10} {'Clues':<6} {'Scenes':<7} {'Vis':<4} {'Dlg':<4} {'Ctx':<4} {'Rel':<4} {'Role':<5}")
+    print("-" * 90)
+
+    # Print each character
+    for char in char_details:
+        print(
+            f"{char['name']:<30} "
+            f"{char['difficulty']:<10} "
+            f"{char['total_clues']:<6} "
+            f"{char['scenes']:<7} "
+            f"{char['visual']:<4} "
+            f"{char['dialogue']:<4} "
+            f"{char['contextual']:<4} "
+            f"{char['relationship']:<4} "
+            f"{char['role']:<5}"
+        )
+
+    print()
+    print("=" * 80)
+    print()
+    print("Legend:")
+    print("  Diff = Difficulty rating (EASY/MEDIUM/HARD/VERY HARD)")
+    print("  Clues = Total identifying clues")
+    print("  Scenes = Number of scenes character appears in")
+    print("  Vis = Visual clues (uniform, items, features, body position)")
+    print("  Dlg = Dialogue clues (accent, name mentions)")
+    print("  Ctx = Contextual clues (environment, spatial relationships)")
+    print("  Rel = Relationship clues")
+    print("  Role = Role clues (mentioned, behavior)")
+    print()
+
+    print("=" * 80)
 
     # Return exit code
     all_passed = all(passed for passed, _ in validation_results.values())
