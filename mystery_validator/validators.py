@@ -170,6 +170,8 @@ def analyze_clues_per_character(
 ) -> Dict[str, Dict]:
     """Analyze how many identifying clues each character has.
 
+    Uses percentile-based difficulty distribution for even buckets (~20% in each).
+
     Returns dict with character names as keys and analysis as values:
     {
         'character_name': {
@@ -180,12 +182,15 @@ def analyze_clues_per_character(
                 'contextual': int,
                 ...
             },
-            'scenes_with_clues': int
+            'scenes_with_clues': int,
+            'difficulty': str
         }
     }
     """
     analysis = {}
+    all_clue_counts = []
 
+    # First pass: count clues for each character
     for character_name in characters:
         char_evidence = [ev for ev in scene_evidence if ev.character_name == character_name]
 
@@ -266,32 +271,84 @@ def analyze_clues_per_character(
                 'role': role_clues
             },
             'scenes_with_clues': len(scenes_with_clues),
-            'difficulty': _calculate_difficulty(total_clues, len(scenes_with_clues))
+            'difficulty': None  # Will be calculated in second pass
         }
+
+        all_clue_counts.append(total_clues)
+
+    # Calculate difficulty thresholds based on percentiles
+    thresholds = _calculate_difficulty_thresholds(all_clue_counts)
+
+    # Second pass: assign difficulty ratings
+    for character_name in analysis:
+        clue_count = analysis[character_name]['total_clues']
+        analysis[character_name]['difficulty'] = _calculate_difficulty(clue_count, thresholds)
 
     return analysis
 
 
-def _calculate_difficulty(clue_count: int, scene_count: int) -> str:
-    """Calculate character difficulty rating based on number of clues.
+def _calculate_difficulty_thresholds(all_clue_counts: list[int]) -> dict:
+    """Calculate difficulty thresholds based on quintiles for even distribution.
+
+    Divides characters into 5 equal groups based on clue counts:
+    - VERY HARD: Bottom 20% (fewest clues)
+    - HARD: 20-40%
+    - MEDIUM: 40-60%
+    - EASY: 60-80%
+    - VERY EASY: Top 20% (most clues)
+
+    If characters have the same clue count, they go in the lower (harder) bucket.
+
+    Returns dict with minimum clue count thresholds for each difficulty level.
+    """
+    sorted_counts = sorted(all_clue_counts)
+    n = len(sorted_counts)
+
+    # Calculate exact indices for quintile boundaries
+    # For 60 characters: indices 12, 24, 36, 48 mark the boundaries
+    # Each character at index i where indices[i] represents their clue count
+
+    # We want to split into 5 groups as evenly as possible
+    # Index 12 is the start of the 2nd quintile (HARD), etc.
+    quintile_size = n // 5  # For 60 chars, this is 12
+
+    # Boundary indices (start of each quintile after the first)
+    idx_20 = quintile_size          # Index 12 for n=60
+    idx_40 = quintile_size * 2      # Index 24 for n=60
+    idx_60 = quintile_size * 3      # Index 36 for n=60
+    idx_80 = quintile_size * 4      # Index 48 for n=60
+
+    # Ensure indices are within bounds
+    idx_20 = min(idx_20, n - 1)
+    idx_40 = min(idx_40, n - 1)
+    idx_60 = min(idx_60, n - 1)
+    idx_80 = min(idx_80, n - 1)
+
+    return {
+        'hard_min': sorted_counts[idx_20],        # Need >= this for HARD
+        'medium_min': sorted_counts[idx_40],      # Need >= this for MEDIUM
+        'easy_min': sorted_counts[idx_60],        # Need >= this for EASY
+        'very_easy_min': sorted_counts[idx_80],   # Need >= this for VERY EASY
+    }
+
+
+def _calculate_difficulty(clue_count: int, thresholds: dict) -> str:
+    """Calculate character difficulty rating based on percentile thresholds.
 
     More clues = easier to identify (more information to work with)
     Fewer clues = harder to identify (must deduce with limited information)
 
-    Difficulty scale (5 brackets):
-    - VERY EASY: 25+ clues (abundant information)
-    - EASY: 15-24 clues (good amount of information)
-    - MEDIUM: 10-14 clues (moderate difficulty)
-    - HARD: 6-9 clues (challenging, limited information)
-    - VERY HARD: 1-5 clues (very difficult, minimal information)
+    Uses percentile-based distribution for even buckets (~20% in each difficulty).
+    Characters with same clue count go in the lower (harder) bucket.
     """
-    if clue_count >= 25:
+    # Check from easiest to hardest
+    if clue_count >= thresholds['very_easy_min']:
         return "VERY EASY"
-    elif clue_count >= 15:
+    elif clue_count >= thresholds['easy_min']:
         return "EASY"
-    elif clue_count >= 10:
+    elif clue_count >= thresholds['medium_min']:
         return "MEDIUM"
-    elif clue_count >= 6:
+    elif clue_count >= thresholds['hard_min']:
         return "HARD"
     else:
         return "VERY HARD"
