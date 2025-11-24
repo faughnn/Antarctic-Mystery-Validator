@@ -273,14 +273,25 @@ def analyze_clues_per_character(
 
 
 def _calculate_difficulty(clue_count: int, scene_count: int) -> str:
-    """Calculate character difficulty rating based on clue and scene counts."""
-    score = clue_count + (scene_count * 0.5)
+    """Calculate character difficulty rating based on number of clues.
 
-    if score >= 8:
+    More clues = easier to identify (more information to work with)
+    Fewer clues = harder to identify (must deduce with limited information)
+
+    Difficulty scale (5 brackets):
+    - VERY EASY: 25+ clues (abundant information)
+    - EASY: 15-24 clues (good amount of information)
+    - MEDIUM: 10-14 clues (moderate difficulty)
+    - HARD: 6-9 clues (challenging, limited information)
+    - VERY HARD: 1-5 clues (very difficult, minimal information)
+    """
+    if clue_count >= 25:
+        return "VERY EASY"
+    elif clue_count >= 15:
         return "EASY"
-    elif score >= 5:
+    elif clue_count >= 10:
         return "MEDIUM"
-    elif score >= 3:
+    elif clue_count >= 6:
         return "HARD"
     else:
         return "VERY HARD"
@@ -367,6 +378,7 @@ def analyze_character_difficulty(
     Returns dict with difficulty levels as keys and lists of character names as values.
     """
     by_difficulty = {
+        'VERY EASY': [],
         'EASY': [],
         'MEDIUM': [],
         'HARD': [],
@@ -385,13 +397,17 @@ def check_difficulty_balance(
 ) -> Tuple[bool, str]:
     """Validate that difficulty distribution is reasonable.
 
-    A balanced game should have:
-    - Some easy characters (to get started)
-    - Majority medium difficulty
-    - Some hard characters (for challenge)
-    - Very few "very hard" characters
+    Game Goal: Players must identify WHO each character is, HOW they died, and WHO killed them.
+    This requires deduction across multiple clues - single clues don't solve the puzzle.
+
+    A balanced Obra Dinn-style game should have:
+    - Some easy/very easy characters (entry points for players to get started)
+    - Majority medium difficulty (bulk of the challenge)
+    - Some hard characters (challenging deductions)
+    - Very few "very hard" characters (edge cases, should be rare)
     """
     total = sum(len(chars) for chars in difficulty_groups.values())
+    very_easy_count = len(difficulty_groups['VERY EASY'])
     easy_count = len(difficulty_groups['EASY'])
     medium_count = len(difficulty_groups['MEDIUM'])
     hard_count = len(difficulty_groups['HARD'])
@@ -401,29 +417,33 @@ def check_difficulty_balance(
     warnings = []
 
     # Check for critical issues
-    if easy_count == 0:
-        issues.append("No EASY characters - players may struggle to get started")
+    entry_points = very_easy_count + easy_count
+    if entry_points == 0:
+        issues.append("No EASY or VERY EASY characters - players will struggle to get started")
 
-    if very_hard_count > total * 0.2:
+    if very_hard_count > total * 0.15:
         issues.append(
             f"{very_hard_count} VERY HARD characters ({very_hard_count/total*100:.0f}%) - "
-            f"too many unsolvable characters"
+            f"too many near-impossible characters"
         )
 
     # Check for warnings
-    if easy_count < 3:
-        warnings.append(f"Only {easy_count} EASY characters - consider adding more entry points")
+    if entry_points < 5:
+        warnings.append(
+            f"Only {entry_points} easy entry points (VERY EASY + EASY) - "
+            f"consider adding more for player onboarding"
+        )
 
-    if medium_count < total * 0.3:
+    if medium_count < total * 0.2:
         warnings.append(
             f"Only {medium_count} MEDIUM characters ({medium_count/total*100:.0f}%) - "
-            f"difficulty curve may be too steep"
+            f"consider adding more mid-difficulty challenges"
         )
 
     # Build report
     report_lines = [
-        f"Difficulty distribution: EASY={easy_count}, MEDIUM={medium_count}, "
-        f"HARD={hard_count}, VERY HARD={very_hard_count}"
+        f"Difficulty distribution: VERY EASY={very_easy_count}, EASY={easy_count}, "
+        f"MEDIUM={medium_count}, HARD={hard_count}, VERY HARD={very_hard_count}"
     ]
 
     if issues:

@@ -2,7 +2,16 @@
 """
 Antarctic Mystery Validator - Main Entry Point
 
-Loads mystery data and runs validation checks to ensure the mystery is solvable.
+GAME GOAL (Obra Dinn-style deduction game):
+Players must identify:
+1. WHO each character is (match unnamed people to their identities)
+2. HOW they died (determine cause of death)
+3. WHO killed them (identify the responsible party)
+
+Single clues don't solve the puzzle - players must combine multiple clues across scenes
+to deduce the full truth through observation and logical deduction.
+
+This validator ensures the mystery is solvable, balanced, and logically consistent.
 """
 
 from pathlib import Path
@@ -90,8 +99,10 @@ def main():
     print()
 
     # Difficulty distribution summary
-    print("📊 Difficulty Distribution:")
-    for difficulty in ['EASY', 'MEDIUM', 'HARD', 'VERY HARD']:
+    print("📊 Difficulty Distribution (based on clue count):")
+    print("   More clues = easier to identify | Fewer clues = harder to identify")
+    print()
+    for difficulty in ['VERY EASY', 'EASY', 'MEDIUM', 'HARD', 'VERY HARD']:
         count = len(difficulty_groups[difficulty])
         percentage = (count / len(characters)) * 100
         print(f"   {difficulty:12} {count:3} characters ({percentage:5.1f}%)")
@@ -142,8 +153,8 @@ def main():
             'role': clue_types['role']
         })
 
-    # Sort by difficulty (VERY HARD first, then HARD, MEDIUM, EASY) and then by clue count
-    difficulty_order = {'VERY HARD': 0, 'HARD': 1, 'MEDIUM': 2, 'EASY': 3}
+    # Sort by difficulty (VERY HARD first, then HARD, MEDIUM, EASY, VERY EASY) and then by clue count
+    difficulty_order = {'VERY HARD': 0, 'HARD': 1, 'MEDIUM': 2, 'EASY': 3, 'VERY EASY': 4}
     char_details.sort(key=lambda x: (difficulty_order[x['difficulty']], x['total_clues'], x['name']))
 
     # Print header
@@ -168,7 +179,8 @@ def main():
     print("=" * 80)
     print()
     print("Legend:")
-    print("  Diff = Difficulty rating (EASY/MEDIUM/HARD/VERY HARD)")
+    print("  Diff = Difficulty rating based on clue count:")
+    print("         VERY EASY (25+) | EASY (15-24) | MEDIUM (10-14) | HARD (6-9) | VERY HARD (1-5)")
     print("  Clues = Total identifying clues")
     print("  Scenes = Number of scenes character appears in")
     print("  Vis = Visual clues (uniform, items, features, body position)")
@@ -176,6 +188,9 @@ def main():
     print("  Ctx = Contextual clues (environment, spatial relationships)")
     print("  Rel = Relationship clues")
     print("  Role = Role clues (mentioned, behavior)")
+    print()
+    print("Note: A single clue doesn't identify a character - players must combine")
+    print("      multiple clues to deduce WHO they are, HOW they died, and WHO killed them.")
     print()
 
     print("=" * 80)
