@@ -59,6 +59,3 @@ Thumbs.db
 
 # Logs
 *.log
-
-# Generated output files
-mystery_validator/output/

@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Killer Network - Antarctic Mystery</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .legend {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .legend h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.95em;
+        }
+
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 2px solid #333;
+        }
+
+        .color-box.red { background: #e74c3c; }
+        .color-box.orange { background: #f39c12; }
+        .color-box.gray { background: #95a5a6; }
+        .color-box.blue { background: #3498db; }
+
+        .stats {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .stats h3 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .stats ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .stats li {
+            padding: 5px 0;
+        }
+
+        .stats ul ul {
+            padding-left: 20px;
+            list-style: disc;
+        }
+
+        .instructions {
+            background: #d1ecf1;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0c5460;
+            color: #0c5460;
+        }
+
+        #network {
+            width: 100%;
+            height: 700px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+
+        .footer {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔪 Killer Network Graph</h1>
+        <p class="subtitle">Antarctic Station Alpha-7 Mystery - Who Killed Whom</p>
+
+        <div class="legend">
+            <h3>Legend:</h3>
+            <div class="legend-items">
+                <span class="legend-item"><span class="color-box red"></span> Pure Killers (never killed)</span>
+                <span class="legend-item"><span class="color-box orange"></span> Killer-Victims (killed and were killed)</span>
+                <span class="legend-item"><span class="color-box gray"></span> Pure Victims (never killed)</span>
+                <span class="legend-item"><span class="color-box blue"></span> Survivors (not involved)</span>
+            </div>
+            <p style="margin-top: 10px;"><strong>Node size</strong> = number of kills | <strong>Arrows</strong> = killer → victim</p>
+        </div>
+
+        <div class="stats">
+            <h3>Network Statistics</h3>
+            <ul>
+                <li><strong>Total Murders:</strong> 46</li>
+                <li><strong>Pure Killers:</strong> 6 (killed but never died)</li>
+                <li><strong>Pure Victims:</strong> 23 (killed but never killed anyone)</li>
+                <li><strong>Killer-Victims:</strong> 23 (killed someone AND were killed)</li>
+                <li><strong>Serial Killers:</strong>
+                    <ul>
+                        <li>Nikolai Kozlov: 5 kills</li>
+                        <li>Erik Khan: 3 kills</li>
+                        <li>Svetlana Sato: 3 kills</li>
+                        <li>Carlos Tanaka: 2 kills</li>
+                        <li>Diego Ito: 2 kills</li>
+                        <li>Dr. Elena Novak: 2 kills</li>
+                        <li>Dr. Lucia Petrov: 2 kills</li>
+                        <li>Felipe Suzuki: 2 kills</li>
+                        <li>Hana Thomas: 2 kills</li>
+                        <li>Ivan Novak: 2 kills</li>
+                        <li>Prof. Yuki Suzuki: 2 kills</li>
+                        <li>Sophie Lee: 2 kills</li>
+                    </ul>
+                </li>
+                <li><strong>Most Central Characters (PageRank):</strong>
+                    <ul>
+                        <li>Prof. Amara Wilson: 0.0340</li>
+                        <li>Ingrid Sato: 0.0287</li>
+                        <li>Dr. Zoe Ivanov: 0.0278</li>
+                        <li>Alice Wilson: 0.0265</li>
+                        <li>Nora Ali: 0.0265</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="instructions">
+            <strong>How to use:</strong> Drag nodes to rearrange | Scroll to zoom | Click and drag background to pan | Hover over nodes/edges for details
+        </div>
+
+        <div id="network"></div>
+
+        <div class="footer">
+            <p>Generated by Antarctic Mystery Validator</p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        // Network data
+        var nodes = new vis.DataSet([
+        {
+                "id": 0,
+                "label": "Alice Wilson",
+                "title": "Alice Wilson (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 1,
+                "label": "Amara Rodriguez",
+                "title": "Amara Rodriguez (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 2,
+                "label": "Carlos Pavlov",
+                "title": "Carlos Pavlov (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 3,
+                "label": "Carlos Tanaka",
+                "title": "Carlos Tanaka (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 4,
+                "label": "David Sokolov",
+                "title": "David Sokolov (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 5,
+                "label": "Diego Ito",
+                "title": "Diego Ito (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 6,
+                "label": "Dr. Amara Pavlov",
+                "title": "Dr. Amara Pavlov (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 7,
+                "label": "Dr. Chen Smith",
+                "title": "Dr. Chen Smith (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 8,
+                "label": "Dr. Elena Novak",
+                "title": "Dr. Elena Novak (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 9,
+                "label": "Dr. Lucia Petrov",
+                "title": "Dr. Lucia Petrov (killed 2)",
+                "color": "#e74c3c",
+                "size": 40
+        },
+        {
+                "id": 10,
+                "label": "Dr. Marcus Tanaka",
+                "title": "Dr. Marcus Tanaka (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 11,
+                "label": "Dr. Zoe Ivanov",
+                "title": "Dr. Zoe Ivanov (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 12,
+                "label": "Elena Kim",
+                "title": "Elena Kim (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 13,
+                "label": "Emma Garcia",
+                "title": "Emma Garcia (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 14,
+                "label": "Emma Nakamura",
+                "title": "Emma Nakamura (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 15,
+                "label": "Erik Jensen",
+                "title": "Erik Jensen (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 16,
+                "label": "Erik Khan",
+                "title": "Erik Khan (killed 3, was killed)",
+                "color": "#f39c12",
+                "size": 50
+        },
+        {
+                "id": 17,
+                "label": "Erik Kim",
+                "title": "Erik Kim (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 18,
+                "label": "Felipe Suzuki",
+                "title": "Felipe Suzuki (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 19,
+                "label": "Felipe Volkov",
+                "title": "Felipe Volkov (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 20,
+                "label": "Grace Kobayashi",
+                "title": "Grace Kobayashi (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 21,
+                "label": "Hana Thomas",
+                "title": "Hana Thomas (killed 2)",
+                "color": "#e74c3c",
+                "size": 40
+        },
+        {
+                "id": 22,
+                "label": "Henrik Khan",
+                "title": "Henrik Khan (killed 1)",
+                "color": "#e74c3c",
+                "size": 30
+        },
+        {
+                "id": 23,
+                "label": "Henrik Singh",
+                "title": "Henrik Singh (killed 1)",
+                "color": "#e74c3c",
+                "size": 30
+        },
+        {
+                "id": 24,
+                "label": "Henrik Taylor",
+                "title": "Henrik Taylor (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 25,
+                "label": "Ingrid Murphy",
+                "title": "Ingrid Murphy (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 26,
+                "label": "Ingrid Novak",
+                "title": "Ingrid Novak (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 27,
+                "label": "Ingrid Sato",
+                "title": "Ingrid Sato (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 28,
+                "label": "Ivan Novak",
+                "title": "Ivan Novak (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 29,
+                "label": "Ivan Sato",
+                "title": "Ivan Sato (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 30,
+                "label": "John Harris",
+                "title": "John Harris (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 31,
+                "label": "John Jackson",
+                "title": "John Jackson (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 32,
+                "label": "Kira Ahmed",
+                "title": "Kira Ahmed (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 33,
+                "label": "Leila Larsen",
+                "title": "Leila Larsen (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 34,
+                "label": "Lucia Harris",
+                "title": "Lucia Harris (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 35,
+                "label": "Magnus Davis",
+                "title": "Magnus Davis (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 36,
+                "label": "Maria Ahmed",
+                "title": "Maria Ahmed (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 37,
+                "label": "Natasha Miller",
+                "title": "Natasha Miller (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 38,
+                "label": "Nikolai Kozlov",
+                "title": "Nikolai Kozlov (killed 5)",
+                "color": "#e74c3c",
+                "size": 70
+        },
+        {
+                "id": 39,
+                "label": "Nora Ali",
+                "title": "Nora Ali (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 40,
+                "label": "Nora Patel",
+                "title": "Nora Patel (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 41,
+                "label": "Oliver Murphy",
+                "title": "Oliver Murphy (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 42,
+                "label": "Oliver Nielsen",
+                "title": "Oliver Nielsen (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 43,
+                "label": "Prof. Aisha Tanaka",
+                "title": "Prof. Aisha Tanaka (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 44,
+                "label": "Prof. Alice Berg",
+                "title": "Prof. Alice Berg (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 45,
+                "label": "Prof. Amara Wilson",
+                "title": "Prof. Amara Wilson (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 46,
+                "label": "Prof. Andre Lopez",
+                "title": "Prof. Andre Lopez (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 47,
+                "label": "Prof. Anton Garcia",
+                "title": "Prof. Anton Garcia (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 48,
+                "label": "Prof. Diego Wilson",
+                "title": "Prof. Diego Wilson (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 49,
+                "label": "Prof. Diego Yamamoto",
+                "title": "Prof. Diego Yamamoto (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 50,
+                "label": "Prof. Emma Davis",
+                "title": "Prof. Emma Davis (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 51,
+                "label": "Prof. Ivan Popov",
+                "title": "Prof. Ivan Popov (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 52,
+                "label": "Prof. Magnus Wilson",
+                "title": "Prof. Magnus Wilson (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 53,
+                "label": "Prof. Yuki Suzuki",
+                "title": "Prof. Yuki Suzuki (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 54,
+                "label": "Rebecca Rodriguez",
+                "title": "Rebecca Rodriguez (victim)",
+                "color": "#95a5a6",
+                "size": 20
+        },
+        {
+                "id": 55,
+                "label": "Sakura Tanaka",
+                "title": "Sakura Tanaka (survived)",
+                "color": "#3498db",
+                "size": 20
+        },
+        {
+                "id": 56,
+                "label": "Sophie Khan",
+                "title": "Sophie Khan (killed 1, was killed)",
+                "color": "#f39c12",
+                "size": 30
+        },
+        {
+                "id": 57,
+                "label": "Sophie Lee",
+                "title": "Sophie Lee (killed 2, was killed)",
+                "color": "#f39c12",
+                "size": 40
+        },
+        {
+                "id": 58,
+                "label": "Svetlana Sato",
+                "title": "Svetlana Sato (killed 3)",
+                "color": "#e74c3c",
+                "size": 50
+        },
+        {
+                "id": 59,
+                "label": "Thomas Wilson",
+                "title": "Thomas Wilson (survived)",
+                "color": "#3498db",
+                "size": 20
+        }
+]);
+        var edges = new vis.DataSet([
+        {
+                "from": 3,
+                "to": 33,
+                "label": "S16",
+                "title": "Carlos Tanaka killed Leila Larsen in scene 16 by Poisoned",
+                "arrows": "to"
+        },
+        {
+                "from": 3,
+                "to": 36,
+                "label": "S42",
+                "title": "Carlos Tanaka killed Maria Ahmed in scene 42 by Hanging",
+                "arrows": "to"
+        },
+        {
+                "from": 5,
+                "to": 24,
+                "label": "S23",
+                "title": "Diego Ito killed Henrik Taylor in scene 23 by Strangled",
+                "arrows": "to"
+        },
+        {
+                "from": 5,
+                "to": 46,
+                "label": "S13",
+                "title": "Diego Ito killed Prof. Andre Lopez in scene 13 by Blunt trauma",
+                "arrows": "to"
+        },
+        {
+                "from": 6,
+                "to": 2,
+                "label": "S28",
+                "title": "Dr. Amara Pavlov killed Carlos Pavlov in scene 28 by Stabbed",
+                "arrows": "to"
+        },
+        {
+                "from": 7,
+                "to": 25,
+                "label": "S4",
+                "title": "Dr. Chen Smith killed Ingrid Murphy in scene 4 by Burned",
+                "arrows": "to"
+        },
+        {
+                "from": 8,
+                "to": 41,
+                "label": "S1",
+                "title": "Dr. Elena Novak killed Oliver Murphy in scene 1 by Burned",
+                "arrows": "to"
+        },
+        {
+                "from": 8,
+                "to": 54,
+                "label": "S21",
+                "title": "Dr. Elena Novak killed Rebecca Rodriguez in scene 21 by Stabbed",
+                "arrows": "to"
+        },
+        {
+                "from": 9,
+                "to": 29,
+                "label": "S30",
+                "title": "Dr. Lucia Petrov killed Ivan Sato in scene 30 by Burned",
+                "arrows": "to"
+        },
+        {
+                "from": 9,
+                "to": 51,
+                "label": "S12",
+                "title": "Dr. Lucia Petrov killed Prof. Ivan Popov in scene 12 by Shot",
+                "arrows": "to"
+        },
+        {
+                "from": 10,
+                "to": 39,
+                "label": "S17",
+                "title": "Dr. Marcus Tanaka killed Nora Ali in scene 17 by Fall from height",
+                "arrows": "to"
+        },
+        {
+                "from": 11,
+                "to": 45,
+                "label": "S50",
+                "title": "Dr. Zoe Ivanov killed Prof. Amara Wilson in scene 50 by Stabbed",
+                "arrows": "to"
+        },
+        {
+                "from": 13,
+                "to": 32,
+                "label": "S10",
+                "title": "Emma Garcia killed Kira Ahmed in scene 10 by Stabbed",
+                "arrows": "to"
+        },
+        {
+                "from": 15,
+                "to": 12,
+                "label": "S48",
+                "title": "Erik Jensen killed Elena Kim in scene 48 by Shot",
+                "arrows": "to"
+        },
+        {
+                "from": 16,
+                "to": 3,
+                "label": "S28",
+                "title": "Erik Khan killed Carlos Tanaka in scene 28 by Suffocated",
+                "arrows": "to"
+        },
+        {
+                "from": 16,
+                "to": 30,
+                "label": "S44",
+                "title": "Erik Khan killed John Harris in scene 44 by Explosion",
+                "arrows": "to"
+        },
+        {
+                "from": 16,
+                "to": 37,
+                "label": "S3",
+                "title": "Erik Khan killed Natasha Miller in scene 3 by Burned",
+                "arrows": "to"
+        },
+        {
+                "from": 18,
+                "to": 10,
+                "label": "S15",
+                "title": "Felipe Suzuki killed Dr. Marcus Tanaka in scene 15 by Blunt trauma",
+                "arrows": "to"
+        },
+        {
+                "from": 18,
+                "to": 56,
+                "label": "S11",
+                "title": "Felipe Suzuki killed Sophie Khan in scene 11 by Hanging",
+                "arrows": "to"
+        },
+        {
+                "from": 20,
+                "to": 27,
+                "label": "S39",
+                "title": "Grace Kobayashi killed Ingrid Sato in scene 39 by Suffocated",
+                "arrows": "to"
+        },
+        {
+                "from": 21,
+                "to": 4,
+                "label": "S42",
+                "title": "Hana Thomas killed David Sokolov in scene 42 by Electrocuted",
+                "arrows": "to"
+        },
+        {
+                "from": 21,
+                "to": 16,
+                "label": "S34",
+                "title": "Hana Thomas killed Erik Khan in scene 34 by Suffocated",
+                "arrows": "to"
+        },
+        {
+                "from": 22,
+                "to": 34,
+                "label": "S35",
+                "title": "Henrik Khan killed Lucia Harris in scene 35 by Blunt trauma",
+                "arrows": "to"
+        },
+        {
+                "from": 23,
+                "to": 49,
+                "label": "S46",
+                "title": "Henrik Singh killed Prof. Diego Yamamoto in scene 46 by Stabbed",
+                "arrows": "to"
+        },
+        {
+                "from": 28,
+                "to": 35,
+                "label": "S33",
+                "title": "Ivan Novak killed Magnus Davis in scene 33 by Poisoned",
+                "arrows": "to"
+        },
+        {
+                "from": 28,
+                "to": 48,
+                "label": "S2",
+                "title": "Ivan Novak killed Prof. Diego Wilson in scene 2 by Frozen",
+                "arrows": "to"
+        },
+        {
+                "from": 30,
+                "to": 19,
+                "label": "S32",
+                "title": "John Harris killed Felipe Volkov in scene 32 by Frozen",
+                "arrows": "to"
+        },
+        {
+                "from": 32,
+                "to": 11,
+                "label": "S16",
+                "title": "Kira Ahmed killed Dr. Zoe Ivanov in scene 16 by Explosion",
+                "arrows": "to"
+        },
+        {
+                "from": 33,
+                "to": 28,
+                "label": "S5",
+                "title": "Leila Larsen killed Ivan Novak in scene 5 by Blunt trauma",
+                "arrows": "to"
+        },
+        {
+                "from": 36,
+                "to": 47,
+                "label": "S19",
+                "title": "Maria Ahmed killed Prof. Anton Garcia in scene 19 by Hanging",
+                "arrows": "to"
+        },
+        {
+                "from": 38,
+                "to": 13,
+                "label": "S26",
+                "title": "Nikolai Kozlov killed Emma Garcia in scene 26 by Explosion",
+                "arrows": "to"
+        },
+        {
+                "from": 38,
+                "to": 17,
+                "label": "S29",
+                "title": "Nikolai Kozlov killed Erik Kim in scene 29 by Burned",
+                "arrows": "to"
+        },
+        {
+                "from": 38,
+                "to": 42,
+                "label": "S41",
+                "title": "Nikolai Kozlov killed Oliver Nielsen in scene 41 by Suffocated",
+                "arrows": "to"
+        },
+        {
+                "from": 38,
+                "to": 52,
+                "label": "S22",
+                "title": "Nikolai Kozlov killed Prof. Magnus Wilson in scene 22 by Suffocated",
+                "arrows": "to"
+        },
+        {
+                "from": 38,
+                "to": 57,
+                "label": "S38",
+                "title": "Nikolai Kozlov killed Sophie Lee in scene 38 by Hanging",
+                "arrows": "to"
+        },
+        {
+                "from": 43,
+                "to": 20,
+                "label": "S2",
+                "title": "Prof. Aisha Tanaka killed Grace Kobayashi in scene 2 by Electrocuted",
+                "arrows": "to"
+        },
+        {
+                "from": 46,
+                "to": 50,
+                "label": "S4",
+                "title": "Prof. Andre Lopez killed Prof. Emma Davis in scene 4 by Frozen",
+                "arrows": "to"
+        },
+        {
+                "from": 52,
+                "to": 18,
+                "label": "S24",
+                "title": "Prof. Magnus Wilson killed Felipe Suzuki in scene 24 by Poisoned",
+                "arrows": "to"
+        },
+        {
+                "from": 53,
+                "to": 8,
+                "label": "S14",
+                "title": "Prof. Yuki Suzuki killed Dr. Elena Novak in scene 14 by Electrocuted",
+                "arrows": "to"
+        },
+        {
+                "from": 53,
+                "to": 15,
+                "label": "S45",
+                "title": "Prof. Yuki Suzuki killed Erik Jensen in scene 45 by Explosion",
+                "arrows": "to"
+        },
+        {
+                "from": 56,
+                "to": 0,
+                "label": "S47",
+                "title": "Sophie Khan killed Alice Wilson in scene 47 by Fall from height",
+                "arrows": "to"
+        },
+        {
+                "from": 57,
+                "to": 5,
+                "label": "S20",
+                "title": "Sophie Lee killed Diego Ito in scene 20 by Stabbed",
+                "arrows": "to"
+        },
+        {
+                "from": 57,
+                "to": 6,
+                "label": "S18",
+                "title": "Sophie Lee killed Dr. Amara Pavlov in scene 18 by Burned",
+                "arrows": "to"
+        },
+        {
+                "from": 58,
+                "to": 7,
+                "label": "S25",
+                "title": "Svetlana Sato killed Dr. Chen Smith in scene 25 by Suffocated",
+                "arrows": "to"
+        },
+        {
+                "from": 58,
+                "to": 43,
+                "label": "S32",
+                "title": "Svetlana Sato killed Prof. Aisha Tanaka in scene 32 by Strangled",
+                "arrows": "to"
+        },
+        {
+                "from": 58,
+                "to": 53,
+                "label": "S18",
+                "title": "Svetlana Sato killed Prof. Yuki Suzuki in scene 18 by Strangled",
+                "arrows": "to"
+        }
+]);
+
+        // Create network
+        var container = document.getElementById("network");
+        var data = { nodes: nodes, edges: edges };
+        var options = {
+            physics: {
+                enabled: true,
+                barnesHut: {
+                    gravitationalConstant: -8000,
+                    springLength: 200,
+                    springConstant: 0.04
+                },
+                stabilization: {
+                    iterations: 200
+                }
+            },
+            edges: {
+                color: { color: "#848484", highlight: "#e74c3c" },
+                width: 2,
+                font: { size: 12, color: "#333" },
+                smooth: { type: "cubicBezier" }
+            },
+            nodes: {
+                font: { size: 14, color: "#fff", face: "arial" },
+                borderWidth: 2,
+                borderWidthSelected: 4
+            },
+            interaction: {
+                hover: true,
+                tooltipDelay: 200
+            }
+        };
+
+        var network = new vis.Network(container, data, options);
+    </script>
+</body>
+</html>
