@@ -227,6 +227,9 @@ def main():
 
     matrix_path = output_dir / "character_scene_matrix.html"
     visualizations.generate_character_scene_matrix(characters, scene_evidence, matrix_path)
+
+    network_path = output_dir / "killer_network.html"
+    visualizations.generate_killer_network(characters, network_path)
     print()
 
     # Return exit code
