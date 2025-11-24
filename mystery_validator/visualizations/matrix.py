@@ -18,6 +18,7 @@ def generate_character_scene_matrix(
     Shows:
     - ● = Character appears in scene
     - ☠ = Character dies in scene
+    - ✝ = Character already dead (died in earlier scene)
     - - = Character absent from scene
 
     Args:
@@ -92,6 +93,7 @@ def _generate_html(
         '            <h3>Legend:</h3>',
         '            <span class="legend-item"><span class="cell appears">●</span> Appears in scene</span>',
         '            <span class="legend-item"><span class="cell dies">☠</span> Dies in scene</span>',
+        '            <span class="legend-item"><span class="cell dead">✝</span> Already dead (died in earlier scene)</span>',
         '            <span class="legend-item"><span class="cell absent">-</span> Absent from scene</span>',
         '        </div>',
         '',
@@ -122,6 +124,10 @@ def _generate_html(
         html_parts.append(f'                        <td class="sticky-col char-name">{char_name}</td>')
         html_parts.append(f'                        <td class="sticky-col total">{total}</td>')
 
+        # Get death scene for this character
+        char_obj = characters[char_name]
+        death_scene = char_obj.death_scene if char_obj.is_dead() else None
+
         # Scene cells
         for scene_num in sorted_scenes:
             scene_data = scenes_by_number.get(scene_num, {})
@@ -133,7 +139,11 @@ def _generate_html(
                 else:
                     html_parts.append('                        <td class="cell appears">●</td>')
             else:
-                html_parts.append('                        <td class="cell absent">-</td>')
+                # Character not in this scene - check if already dead
+                if death_scene and scene_num > death_scene:
+                    html_parts.append('                        <td class="cell dead">✝</td>')
+                else:
+                    html_parts.append('                        <td class="cell absent">-</td>')
 
         html_parts.append('                    </tr>')
 
@@ -276,6 +286,11 @@ def _get_css() -> str:
 
         .dies {
             color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .dead {
+            color: #95a5a6;
             font-weight: bold;
         }
 
