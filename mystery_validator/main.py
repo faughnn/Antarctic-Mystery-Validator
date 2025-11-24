@@ -102,6 +102,22 @@ def main():
     # Generate reports
     generate_simple_report(validation_results)
 
+    # Generate HTML report
+    from reports import generate_html_report
+    output_dir = Path(__file__).parent / "output"
+    output_dir.mkdir(exist_ok=True)
+    report_path = output_dir / "validation_report.html"
+    generate_html_report(
+        validation_results,
+        difficulty_groups,
+        clue_analysis,
+        appearance_analysis,
+        scene_complexity,
+        len(characters),
+        len(set(e.scene_number for e in scene_evidence)),
+        report_path
+    )
+
     # Generate analytical report
     print()
     print("=" * 80)
