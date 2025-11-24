@@ -18,6 +18,7 @@ from pathlib import Path
 from loaders import load_characters, load_scene_evidence, load_dialogue
 from reports import generate_simple_report
 import validators
+import visualizations
 
 
 def main():
@@ -217,6 +218,16 @@ def main():
     print()
 
     print("=" * 80)
+
+    # Generate visualizations
+    print()
+    print("Generating visualizations...")
+    output_dir = Path(__file__).parent / "output"
+    output_dir.mkdir(exist_ok=True)
+
+    matrix_path = output_dir / "character_scene_matrix.html"
+    visualizations.generate_character_scene_matrix(characters, scene_evidence, matrix_path)
+    print()
 
     # Return exit code
     all_passed = all(passed for passed, _ in validation_results.values())
