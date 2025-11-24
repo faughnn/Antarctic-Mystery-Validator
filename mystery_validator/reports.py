@@ -13,10 +13,8 @@ def generate_simple_report(validation_results: Dict[str, Tuple[bool, str]]) -> N
 
     for validation_name, (passed, details) in validation_results.items():
         status = "✓ PASS" if passed else "✗ FAIL"
-        status_color = "\033[92m" if passed else "\033[91m"  # Green or Red
-        reset_color = "\033[0m"
 
-        print(f"{status_color}{status}{reset_color} - {validation_name}")
+        print(f"{status} - {validation_name}")
 
         if details:
             # Indent details for readability
