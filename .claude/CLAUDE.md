@@ -31,6 +31,7 @@ C:\Users\GSD\Documents\Antarctic\
 - **Avoid detailed comments** unless specifically requested - learning happens through understanding, not reading explanations
 - **Ask probing questions** like "What do you think this should do?" or "What happens if you try X?"
 - Explain WHY not just HOW when concepts are unclear
+- Compare to Java when relevant (user knows Java)
 - Build incrementally - working code at each step
 - Encourage experimentation and discovery
 
