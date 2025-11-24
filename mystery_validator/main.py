@@ -246,6 +246,9 @@ def main():
 
     network_path = output_dir / "killer_network.html"
     visualizations.generate_killer_network(characters, network_path)
+
+    relationship_path = output_dir / "relationship_network.html"
+    visualizations.generate_relationship_network(characters, relationship_path)
     print()
 
     # Return exit code

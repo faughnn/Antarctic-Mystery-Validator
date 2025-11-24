@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relationship Network - Antarctic Mystery</title>
+    <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #34495e;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #7f8c8d;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        #network {
+            width: 100%;
+            height: 700px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .stats-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .dept-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dept-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .legend {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .legend-section {
+            margin-bottom: 15px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 8px;
+        }
+
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 5px 0;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            #network {
+                height: 500px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Relationship Network</h1>
+        <p class="subtitle">Antarctic Station Alpha-7 - Professional, Family & Killer Connections</p>
+
+        <!-- View Mode Controls -->
+        <div class="controls">
+            <h3>View Mode:</h3>
+            <div class="button-group">
+                <button id="viewAll" class="btn active">📊 Full View</button>
+                <button id="viewOrg" class="btn">🏢 Org Chart</button>
+                <button id="viewFamily" class="btn">👨‍👩‍👧 Family</button>
+                <button id="viewDept" class="btn">🏭 Departments</button>
+                <button id="viewNationality" class="btn">🌍 Nationality</button>
+                <button id="viewKiller" class="btn">💀 Killers</button>
+            </div>
+
+            <h3>Show/Hide Edges:</h3>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="showProfessional" checked> Professional</label>
+                <label><input type="checkbox" id="showFamily" checked> Family</label>
+                <label><input type="checkbox" id="showKiller" checked> Killer</label>
+            </div>
+        </div>
+
+        <!-- Network Visualization -->
+        <div id="network"></div>
+
+        <!-- Statistics Panel -->
+        <div class="stats-panel">
+            <h3>Network Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">60</div>
+                    <div class="stat-label">Characters</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">32</div>
+                    <div class="stat-label">Family Connections</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">86</div>
+                    <div class="stat-label">Professional Links</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">46</div>
+                    <div class="stat-label">Murders</div>
+                </div>
+            </div>
+
+            <h4>Departments</h4>
+            <div class="dept-list">
+                <div class="dept-item"><span class="color-box" style="background:#95a5a6"></span>Other: 21</div>
+                <div class="dept-item"><span class="color-box" style="background:#3498db"></span>Science: 11</div>
+                <div class="dept-item"><span class="color-box" style="background:#e67e22"></span>Engineering: 10</div>
+                <div class="dept-item"><span class="color-box" style="background:#34495e"></span>Administration: 6</div>
+                <div class="dept-item"><span class="color-box" style="background:#2ecc71"></span>Medical: 5</div>
+                <div class="dept-item"><span class="color-box" style="background:#e74c3c"></span>Security: 4</div>
+                <div class="dept-item"><span class="color-box" style="background:#9b59b6"></span>Communications: 3</div>
+            </div>
+
+            <h4>Hierarchy Tiers</h4>
+            <ul>
+                <li>Tier 1 (Leadership): 6</li>
+                <li>Tier 2 (Department Heads): 0</li>
+                <li>Tier 3 (Senior Staff): 6</li>
+                <li>Tier 4 (Staff): 48</li>
+            </ul>
+            <h4>Families</h4>
+            <ul>
+                <li>Wilson: 5 members</li>
+                <li>Tanaka: 4 members</li>
+                <li>Novak: 3 members</li>
+                <li>Khan: 3 members</li>
+                <li>Sato: 3 members</li>
+            </ul>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Legend</h3>
+            <div class="legend-section">
+                <h4>Node Colors (Nationality)</h4>
+                <div class="legend-grid">
+                    <div><span class="color-box" style="background:#3498db"></span>American</div>
+                    <div><span class="color-box" style="background:#e74c3c"></span>Australian</div>
+                    <div><span class="color-box" style="background:#2ecc71"></span>Brazilian</div>
+                    <div><span class="color-box" style="background:#f39c12"></span>British</div>
+                    <div><span class="color-box" style="background:#9b59b6"></span>Canadian</div>
+                    <div><span class="color-box" style="background:#1abc9c"></span>Chinese</div>
+                    <div><span class="color-box" style="background:#e67e22"></span>Danish</div>
+                    <div><span class="color-box" style="background:#34495e"></span>Dutch</div>
+                    <div><span class="color-box" style="background:#16a085"></span>Finnish</div>
+                    <div><span class="color-box" style="background:#27ae60"></span>French</div>
+                    <div><span class="color-box" style="background:#2980b9"></span>German</div>
+                    <div><span class="color-box" style="background:#8e44ad"></span>Indian</div>
+                    <div><span class="color-box" style="background:#2c3e50"></span>Italian</div>
+                    <div><span class="color-box" style="background:#f1c40f"></span>Japanese</div>
+                    <div><span class="color-box" style="background:#d35400"></span>Norwegian</div>
+                    <div><span class="color-box" style="background:#c0392b"></span>Polish</div>
+                    <div><span class="color-box" style="background:#7f8c8d"></span>Russian</div>
+                    <div><span class="color-box" style="background:#bdc3c7"></span>Spanish</div>
+                    <div><span class="color-box" style="background:#95a5a6"></span>Swedish</div>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Node Borders</h4>
+                <div><span class="color-box" style="background:#27ae60"></span>Alive</div>
+                <div><span class="color-box" style="background:#e74c3c"></span>Dead</div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Node Size & Shape</h4>
+                <div>■ Large Square = Leadership</div>
+                <div>■ Small Square = Dept Heads</div>
+                <div>● Large Circle = Senior Staff</div>
+                <div>● Small Circle = Staff</div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Edge Types</h4>
+                <div><span style="color:#e74c3c;">—</span> Family Connection</div>
+                <div><span style="color:#3498db;">—</span> Professional Hierarchy</div>
+                <div><span style="color:#c0392b;">⤍</span> Killer → Victim</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Network data
+        const nodes = new vis.DataSet([{"id": 0, "label": "Alice Wilson", "title": "Alice Wilson\nStation Manager\nJapanese\nDept: Administration\n\u2620 Died in scene 47", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 32, "shape": "box", "borderWidth": 3, "font": {"size": 12}}, {"id": 1, "label": "Amara Rodriguez", "title": "Amara Rodriguez\nElectrician\nItalian\nDept: Other\n\u2620 Died in scene 7", "color": {"background": "#2c3e50", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 2, "label": "Carlos Pavlov", "title": "Carlos Pavlov\nMedical Officer\nAustralian\nDept: Medical\n\u2620 Died in scene 28", "color": {"background": "#e74c3c", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 3, "label": "Carlos Tanaka", "title": "Carlos Tanaka\nMaintenance Technician\nRussian\nDept: Engineering\n\u2620 Died in scene 28", "color": {"background": "#7f8c8d", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 4, "label": "David Sokolov", "title": "David Sokolov\nEngineer\nJapanese\nDept: Engineering\n\u2620 Died in scene 42", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 5, "label": "Diego Ito", "title": "Diego Ito\nClimatologist\nSwedish\nDept: Other\n\u2620 Died in scene 20", "color": {"background": "#95a5a6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 6, "label": "Dr. Amara Pavlov", "title": "Dr. Amara Pavlov\nChemist\nFrench\nDept: Science\n\u2620 Died in scene 18", "color": {"background": "#27ae60", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 7, "label": "Dr. Chen Smith", "title": "Dr. Chen Smith\nIT Specialist\nGerman\nDept: Other\n\u2620 Died in scene 25", "color": {"background": "#2980b9", "border": "#e74c3c"}, "size": 16, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 8, "label": "Dr. Elena Novak", "title": "Dr. Elena Novak\nSystems Analyst\nPolish\nDept: Other\n\u2620 Died in scene 14", "color": {"background": "#c0392b", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 9, "label": "Dr. Lucia Petrov", "title": "Dr. Lucia Petrov\nIT Specialist\nGerman\nDept: Other\n\u2620 Died in scene 32", "color": {"background": "#2980b9", "border": "#e74c3c"}, "size": 16, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 10, "label": "Dr. Marcus Tanaka", "title": "Dr. Marcus Tanaka\nMedical Officer\nDanish\nDept: Medical\n\u2620 Died in scene 15", "color": {"background": "#e67e22", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 11, "label": "Dr. Zoe Ivanov", "title": "Dr. Zoe Ivanov\nIT Specialist\nJapanese\nDept: Other\n\u2620 Died in scene 16", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 16, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 12, "label": "Elena Kim", "title": "Elena Kim\nMaintenance Technician\nRussian\nDept: Engineering\n\u2620 Died in scene 48", "color": {"background": "#7f8c8d", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 13, "label": "Emma Garcia", "title": "Emma Garcia\nMaintenance Technician\nJapanese\nDept: Engineering\n\u2620 Died in scene 26", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 14, "label": "Emma Nakamura", "title": "Emma Nakamura\nRadio Operator\nCanadian\nDept: Communications\n\u2620 Died in scene 9", "color": {"background": "#9b59b6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 15, "label": "Erik Jensen", "title": "Erik Jensen\nMeteorologist\nJapanese\nDept: Other\n\u2620 Died in scene 45", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 16, "label": "Erik Khan", "title": "Erik Khan\nBiologist\nItalian\nDept: Science\n\u2620 Died in scene 34", "color": {"background": "#2c3e50", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 17, "label": "Erik Kim", "title": "Erik Kim\nField Researcher\nJapanese\nDept: Science\n\u2620 Died in scene 29", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 18, "label": "Felipe Suzuki", "title": "Felipe Suzuki\nCook\nNorwegian\nDept: Other\n\u2620 Died in scene 24", "color": {"background": "#d35400", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 19, "label": "Felipe Volkov", "title": "Felipe Volkov\nField Researcher\nRussian\nDept: Science\n\u2620 Died in scene 32", "color": {"background": "#7f8c8d", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 20, "label": "Grace Kobayashi", "title": "Grace Kobayashi\nPilot\nIndian\nDept: Other\n\u2620 Died in scene 2", "color": {"background": "#8e44ad", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 21, "label": "Hana Thomas", "title": "Hana Thomas\nScientist\nItalian\nDept: Science\n\u2620 Died in scene 43", "color": {"background": "#2c3e50", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 22, "label": "Henrik Khan", "title": "Henrik Khan\nMedical Officer\nDanish\nDept: Medical\n\u2620 Died in scene 37", "color": {"background": "#e67e22", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 23, "label": "Henrik Singh", "title": "Henrik Singh\nIT Specialist\nDanish\nDept: Other\n\u2620 Died in scene 49", "color": {"background": "#e67e22", "border": "#e74c3c"}, "size": 16, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 24, "label": "Henrik Taylor", "title": "Henrik Taylor\nCommunications Officer\nJapanese\nDept: Security\n\u2620 Died in scene 23", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 25, "label": "Ingrid Murphy", "title": "Ingrid Murphy\nBiologist\nGerman\nDept: Science\n\u2620 Died in scene 4", "color": {"background": "#2980b9", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 26, "label": "Ingrid Novak", "title": "Ingrid Novak\nBiologist\nBritish\nDept: Science\n\u2620 Died in scene 26", "color": {"background": "#f39c12", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 27, "label": "Ingrid Sato", "title": "Ingrid Sato\nStation Manager\nDutch\nDept: Administration\n\u2620 Died in scene 39", "color": {"background": "#34495e", "border": "#e74c3c"}, "size": 32, "shape": "box", "borderWidth": 3, "font": {"size": 12}}, {"id": 28, "label": "Ivan Novak", "title": "Ivan Novak\nIT Specialist\nFinnish\nDept: Other\n\u2620 Died in scene 5", "color": {"background": "#16a085", "border": "#e74c3c"}, "size": 16, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 29, "label": "Ivan Sato", "title": "Ivan Sato\nPilot\nSpanish\nDept: Other\n\u2620 Died in scene 30", "color": {"background": "#bdc3c7", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 30, "label": "John Harris", "title": "John Harris\nBiologist\nAustralian\nDept: Science\n\u2620 Died in scene 44", "color": {"background": "#e74c3c", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 31, "label": "John Jackson", "title": "John Jackson\nStation Manager\nIndian\nDept: Administration\n\u2620 Died in scene 17", "color": {"background": "#8e44ad", "border": "#e74c3c"}, "size": 32, "shape": "box", "borderWidth": 3, "font": {"size": 12}}, {"id": 32, "label": "Kira Ahmed", "title": "Kira Ahmed\nStation Manager\nAmerican\nDept: Administration\n\u2620 Died in scene 10", "color": {"background": "#3498db", "border": "#e74c3c"}, "size": 32, "shape": "box", "borderWidth": 3, "font": {"size": 12}}, {"id": 33, "label": "Leila Larsen", "title": "Leila Larsen\nPilot\nSwedish\nDept: Other\n\u2620 Died in scene 16", "color": {"background": "#95a5a6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 34, "label": "Lucia Harris", "title": "Lucia Harris\nCommunications Officer\nFinnish\nDept: Security\n\u2620 Died in scene 35", "color": {"background": "#16a085", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 35, "label": "Magnus Davis", "title": "Magnus Davis\nGeologist\nPolish\nDept: Other\n\u2620 Died in scene 33", "color": {"background": "#c0392b", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 36, "label": "Maria Ahmed", "title": "Maria Ahmed\nMechanic\nItalian\nDept: Engineering\n\u2620 Died in scene 42", "color": {"background": "#2c3e50", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 37, "label": "Natasha Miller", "title": "Natasha Miller\nEngineer\nCanadian\nDept: Engineering\n\u2620 Died in scene 3", "color": {"background": "#9b59b6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 38, "label": "Nikolai Kozlov", "title": "Nikolai Kozlov\nBiologist\nDanish\nDept: Science\n\u2620 Died in scene 27", "color": {"background": "#e67e22", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 39, "label": "Nora Ali", "title": "Nora Ali\nStation Manager\nAustralian\nDept: Administration\n\u2620 Died in scene 17", "color": {"background": "#e74c3c", "border": "#e74c3c"}, "size": 32, "shape": "box", "borderWidth": 3, "font": {"size": 12}}, {"id": 40, "label": "Nora Patel", "title": "Nora Patel\nScientist\nPolish\nDept: Science\n\u2620 Died in scene 31", "color": {"background": "#c0392b", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 41, "label": "Oliver Murphy", "title": "Oliver Murphy\nIT Specialist\nItalian\nDept: Other\n\u2620 Died in scene 1", "color": {"background": "#2c3e50", "border": "#e74c3c"}, "size": 16, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 42, "label": "Oliver Nielsen", "title": "Oliver Nielsen\nElectrician\nPolish\nDept: Other\n\u2620 Died in scene 41", "color": {"background": "#c0392b", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 43, "label": "Prof. Aisha Tanaka", "title": "Prof. Aisha Tanaka\nMedical Officer\nChinese\nDept: Medical\n\u2620 Died in scene 32", "color": {"background": "#1abc9c", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 44, "label": "Prof. Alice Berg", "title": "Prof. Alice Berg\nCook\nJapanese\nDept: Other\n\u2620 Died in scene 36", "color": {"background": "#f1c40f", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 45, "label": "Prof. Amara Wilson", "title": "Prof. Amara Wilson\nBiologist\nDanish\nDept: Science\n\u2620 Died in scene 50", "color": {"background": "#e67e22", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 46, "label": "Prof. Andre Lopez", "title": "Prof. Andre Lopez\nEngineer\nSwedish\nDept: Engineering\n\u2620 Died in scene 13", "color": {"background": "#95a5a6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 47, "label": "Prof. Anton Garcia", "title": "Prof. Anton Garcia\nSecurity Officer\nBrazilian\nDept: Security\n\u2620 Died in scene 19", "color": {"background": "#2ecc71", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 48, "label": "Prof. Diego Wilson", "title": "Prof. Diego Wilson\nMechanic\nPolish\nDept: Engineering\n\u2620 Died in scene 2", "color": {"background": "#c0392b", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 49, "label": "Prof. Diego Yamamoto", "title": "Prof. Diego Yamamoto\nStation Manager\nNorwegian\nDept: Administration\n\u2620 Died in scene 46", "color": {"background": "#d35400", "border": "#e74c3c"}, "size": 32, "shape": "box", "borderWidth": 3, "font": {"size": 12}}, {"id": 50, "label": "Prof. Emma Davis", "title": "Prof. Emma Davis\nRadio Operator\nFinnish\nDept: Communications\n\u2620 Died in scene 4", "color": {"background": "#16a085", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 51, "label": "Prof. Ivan Popov", "title": "Prof. Ivan Popov\nMechanic\nCanadian\nDept: Engineering\n\u2620 Died in scene 12", "color": {"background": "#9b59b6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 52, "label": "Prof. Magnus Wilson", "title": "Prof. Magnus Wilson\nSystems Analyst\nRussian\nDept: Other\n\u2620 Died in scene 22", "color": {"background": "#7f8c8d", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 53, "label": "Prof. Yuki Suzuki", "title": "Prof. Yuki Suzuki\nRadio Operator\nFinnish\nDept: Communications\n\u2620 Died in scene 18", "color": {"background": "#16a085", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 54, "label": "Rebecca Rodriguez", "title": "Rebecca Rodriguez\nMedical Officer\nSwedish\nDept: Medical\n\u2620 Died in scene 21", "color": {"background": "#95a5a6", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 55, "label": "Sakura Tanaka", "title": "Sakura Tanaka\nEngineer\nBritish\nDept: Engineering\n\u2620 Died in scene 8", "color": {"background": "#f39c12", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 56, "label": "Sophie Khan", "title": "Sophie Khan\nClimatologist\nRussian\nDept: Other\n\u2620 Died in scene 11", "color": {"background": "#7f8c8d", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 57, "label": "Sophie Lee", "title": "Sophie Lee\nElectrician\nIndian\nDept: Other\n\u2620 Died in scene 38", "color": {"background": "#8e44ad", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 58, "label": "Svetlana Sato", "title": "Svetlana Sato\nCommunications Officer\nBrazilian\nDept: Security\n\u2620 Died in scene 40", "color": {"background": "#2ecc71", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}, {"id": 59, "label": "Thomas Wilson", "title": "Thomas Wilson\nMeteorologist\nAmerican\nDept: Other\n\u2620 Died in scene 6", "color": {"background": "#3498db", "border": "#e74c3c"}, "size": 8, "shape": "dot", "borderWidth": 3, "font": {"size": 12}}]);
+        const edges = new vis.DataSet([{"from": 0, "to": 45, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 0, "to": 48, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 0, "to": 52, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 0, "to": 59, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 0, "to": 56, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 47 - Fall from height", "group": "killer"}, {"from": 1, "to": 54, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Rodriguez", "group": "family"}, {"from": 1, "to": 7, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 1, "to": 9, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 1, "to": 11, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 1, "to": 23, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 1, "to": 28, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 1, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 2, "to": 6, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 28 - Stabbed", "group": "killer"}, {"from": 3, "to": 10, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Tanaka", "group": "family"}, {"from": 3, "to": 43, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Tanaka", "group": "family"}, {"from": 3, "to": 55, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Tanaka", "group": "family"}, {"from": 3, "to": 16, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 28 - Suffocated", "group": "killer"}, {"from": 3, "to": 33, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 16 - Poisoned", "group": "killer"}, {"from": 3, "to": 36, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 42 - Hanging", "group": "killer"}, {"from": 4, "to": 21, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 42 - Electrocuted", "group": "killer"}, {"from": 5, "to": 7, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 5, "to": 9, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 5, "to": 11, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 5, "to": 23, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 5, "to": 28, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 5, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 5, "to": 57, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 20 - Stabbed", "group": "killer"}, {"from": 5, "to": 24, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 23 - Strangled", "group": "killer"}, {"from": 5, "to": 46, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 13 - Blunt trauma", "group": "killer"}, {"from": 6, "to": 57, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 18 - Burned", "group": "killer"}, {"from": 7, "to": 8, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 15, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 18, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 20, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 29, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 33, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 35, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 42, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 44, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 52, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 56, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 57, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 59, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 7, "to": 58, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 25 - Suffocated", "group": "killer"}, {"from": 7, "to": 25, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 4 - Burned", "group": "killer"}, {"from": 8, "to": 26, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Novak", "group": "family"}, {"from": 8, "to": 28, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 8, "to": 9, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 8, "to": 11, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 8, "to": 23, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 8, "to": 41, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 1 - Burned", "group": "killer"}, {"from": 8, "to": 53, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 14 - Electrocuted", "group": "killer"}, {"from": 8, "to": 54, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 21 - Stabbed", "group": "killer"}, {"from": 9, "to": 15, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 18, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 20, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 29, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 30 - Burned", "group": "killer"}, {"from": 9, "to": 33, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 35, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 42, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 44, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 52, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 56, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 57, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 59, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 9, "to": 51, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 12 - Shot", "group": "killer"}, {"from": 10, "to": 43, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Tanaka", "group": "family"}, {"from": 10, "to": 55, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Tanaka", "group": "family"}, {"from": 10, "to": 18, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 15 - Blunt trauma", "group": "killer"}, {"from": 10, "to": 39, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 17 - Fall from height", "group": "killer"}, {"from": 11, "to": 15, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 18, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 20, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 29, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 33, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 35, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 42, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 44, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 52, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 56, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 57, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 59, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 11, "to": 32, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 16 - Explosion", "group": "killer"}, {"from": 11, "to": 45, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 50 - Stabbed", "group": "killer"}, {"from": 12, "to": 17, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Kim", "group": "family"}, {"from": 12, "to": 15, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 48 - Shot", "group": "killer"}, {"from": 13, "to": 47, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Garcia", "group": "family"}, {"from": 13, "to": 38, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 26 - Explosion", "group": "killer"}, {"from": 13, "to": 32, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 10 - Stabbed", "group": "killer"}, {"from": 15, "to": 23, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 15, "to": 28, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 15, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 15, "to": 53, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 45 - Explosion", "group": "killer"}, {"from": 16, "to": 22, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Khan", "group": "family"}, {"from": 16, "to": 56, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Khan", "group": "family"}, {"from": 16, "to": 21, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 34 - Suffocated", "group": "killer"}, {"from": 16, "to": 30, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 44 - Explosion", "group": "killer"}, {"from": 16, "to": 37, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 3 - Burned", "group": "killer"}, {"from": 17, "to": 38, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 29 - Burned", "group": "killer"}, {"from": 18, "to": 53, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Suzuki", "group": "family"}, {"from": 18, "to": 23, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 18, "to": 28, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 18, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 18, "to": 52, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 24 - Poisoned", "group": "killer"}, {"from": 18, "to": 56, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 11 - Hanging", "group": "killer"}, {"from": 19, "to": 30, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 32 - Frozen", "group": "killer"}, {"from": 20, "to": 23, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 20, "to": 28, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 20, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 20, "to": 43, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 2 - Electrocuted", "group": "killer"}, {"from": 20, "to": 27, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 39 - Suffocated", "group": "killer"}, {"from": 22, "to": 56, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Khan", "group": "family"}, {"from": 22, "to": 34, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 35 - Blunt trauma", "group": "killer"}, {"from": 23, "to": 29, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 33, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 35, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 42, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 44, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 52, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 56, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 57, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 59, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 23, "to": 49, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 46 - Stabbed", "group": "killer"}, {"from": 25, "to": 41, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Murphy", "group": "family"}, {"from": 26, "to": 28, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Novak", "group": "family"}, {"from": 27, "to": 29, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Sato", "group": "family"}, {"from": 27, "to": 58, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Sato", "group": "family"}, {"from": 28, "to": 29, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 33, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 5 - Blunt trauma", "group": "killer"}, {"from": 28, "to": 35, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 33 - Poisoned", "group": "killer"}, {"from": 28, "to": 42, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 44, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 52, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 56, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 57, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 59, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 28, "to": 48, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 2 - Frozen", "group": "killer"}, {"from": 29, "to": 58, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Sato", "group": "family"}, {"from": 29, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 30, "to": 34, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Harris", "group": "family"}, {"from": 32, "to": 36, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Ahmed", "group": "family"}, {"from": 33, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 35, "to": 50, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Davis", "group": "family"}, {"from": 35, "to": 41, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 36, "to": 47, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 19 - Hanging", "group": "killer"}, {"from": 38, "to": 42, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 41 - Suffocated", "group": "killer"}, {"from": 38, "to": 52, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 22 - Suffocated", "group": "killer"}, {"from": 38, "to": 57, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 38 - Hanging", "group": "killer"}, {"from": 41, "to": 42, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 41, "to": 44, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 41, "to": 52, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 41, "to": 56, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 41, "to": 57, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 41, "to": 59, "color": {"color": "#3498db", "opacity": 0.4}, "width": 2, "dashes": false, "title": "Professional relationship", "group": "professional"}, {"from": 43, "to": 55, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Tanaka", "group": "family"}, {"from": 43, "to": 58, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 32 - Strangled", "group": "killer"}, {"from": 45, "to": 48, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 45, "to": 52, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 45, "to": 59, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 46, "to": 50, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 4 - Frozen", "group": "killer"}, {"from": 48, "to": 52, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 48, "to": 59, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 52, "to": 59, "color": {"color": "#e74c3c", "opacity": 0.6}, "width": 3, "title": "Family: Wilson", "group": "family"}, {"from": 53, "to": 58, "color": {"color": "#c0392b"}, "width": 3, "dashes": [5, 5], "arrows": {"to": {"enabled": true, "scaleFactor": 1.2}}, "title": "Killed in scene 18 - Strangled", "group": "killer"}]);
+
+        // Create network
+        const container = document.getElementById('network');
+        const data = { nodes: nodes, edges: edges };
+        const options = {
+            physics: {
+                enabled: true,
+                hierarchicalRepulsion: {
+                    nodeDistance: 150,
+                    centralGravity: 0.2,
+                },
+                solver: 'hierarchicalRepulsion',
+            },
+            layout: {
+                improvedLayout: true,
+                hierarchical: {
+                    enabled: false,
+                    direction: 'UD',
+                    sortMethod: 'directed',
+                    nodeSpacing: 200,
+                    levelSeparation: 150,
+                }
+            },
+            interaction: {
+                hover: true,
+                navigationButtons: true,
+                keyboard: true,
+            },
+            nodes: {
+                font: {
+                    size: 14,
+                    color: '#2c3e50'
+                }
+            }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        // View mode switching
+        document.getElementById('viewAll').addEventListener('click', function() {
+            setActiveButton(this);
+            showAllEdges();
+            options.layout.hierarchical.enabled = false;
+            network.setOptions(options);
+        });
+
+        document.getElementById('viewOrg').addEventListener('click', function() {
+            setActiveButton(this);
+            hideEdgeGroup('family');
+            hideEdgeGroup('killer');
+            showEdgeGroup('professional');
+            options.layout.hierarchical.enabled = true;
+            network.setOptions(options);
+        });
+
+        document.getElementById('viewFamily').addEventListener('click', function() {
+            setActiveButton(this);
+            hideEdgeGroup('professional');
+            hideEdgeGroup('killer');
+            showEdgeGroup('family');
+            options.layout.hierarchical.enabled = false;
+            network.setOptions(options);
+        });
+
+        document.getElementById('viewDept').addEventListener('click', function() {
+            setActiveButton(this);
+            showEdgeGroup('professional');
+            hideEdgeGroup('family');
+            hideEdgeGroup('killer');
+            options.layout.hierarchical.enabled = true;
+            network.setOptions(options);
+        });
+
+        document.getElementById('viewNationality').addEventListener('click', function() {
+            setActiveButton(this);
+            hideAllEdges();
+            options.layout.hierarchical.enabled = false;
+            network.setOptions(options);
+        });
+
+        document.getElementById('viewKiller').addEventListener('click', function() {
+            setActiveButton(this);
+            hideEdgeGroup('professional');
+            hideEdgeGroup('family');
+            showEdgeGroup('killer');
+            options.layout.hierarchical.enabled = false;
+            network.setOptions(options);
+        });
+
+        // Edge toggle checkboxes
+        document.getElementById('showProfessional').addEventListener('change', function() {
+            if (this.checked) showEdgeGroup('professional');
+            else hideEdgeGroup('professional');
+        });
+
+        document.getElementById('showFamily').addEventListener('change', function() {
+            if (this.checked) showEdgeGroup('family');
+            else hideEdgeGroup('family');
+        });
+
+        document.getElementById('showKiller').addEventListener('change', function() {
+            if (this.checked) showEdgeGroup('killer');
+            else hideEdgeGroup('killer');
+        });
+
+        // Helper functions
+        function setActiveButton(button) {
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+        }
+
+        function showAllEdges() {
+            edges.forEach(edge => edges.update({{id: edge.id, hidden: false}}));
+        }
+
+        function hideAllEdges() {
+            edges.forEach(edge => edges.update({{id: edge.id, hidden: true}}));
+        }
+
+        function showEdgeGroup(group) {
+            edges.forEach(edge => {{
+                if (edge.group === group) {{
+                    edges.update({{id: edge.id, hidden: false}});
+                }}
+            }});
+        }
+
+        function hideEdgeGroup(group) {
+            edges.forEach(edge => {{
+                if (edge.group === group) {{
+                    edges.update({{id: edge.id, hidden: true}});
+                }}
+            }});
+        }
+    </script>
+</body>
+</html>
