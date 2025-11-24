@@ -1,59 +1,77 @@
-import csv
-import json
-from models import Character
-from loaders import load_characters, load_clues, load_scenes
+#!/usr/bin/env python3
+"""
+Antarctic Mystery Validator - Main Entry Point
+
+Loads mystery data and runs validation checks to ensure the mystery is solvable.
+"""
+
+from pathlib import Path
+from loaders import load_characters, load_scene_evidence, load_dialogue
 from reports import generate_simple_report
 import validators
 
 
-characters = load_characters('mystery_validator\data\characters.csv')
-clues = load_clues('mystery_validator\data\clues.csv')
-scenes = load_scenes('mystery_validator\data\scenes.csv')
+def main():
+    """Main entry point for the mystery validator."""
+    # Get the data directory path
+    data_dir = Path(__file__).parent / "data" / "exported"
 
-# for character in characters:
-#     print("Character description: " + characters[character].get_description())
-#     print("id:" + character + " - " + characters[character].name + " - " + characters[character].role + " - " + characters[character].death_scene + " - " + characters[character].cause_of_death + " - " + characters[character].killer)
+    # File paths
+    characters_file = data_dir / "characters.csv"
+    evidence_file = data_dir / "scene_evidence.csv"
+    dialogue_file = data_dir / "dialogue.csv"
 
-# for clue in clues:
-#     print("id:" + clue + " - Scene: " + clues[clue].discovery_scene_id + " - type: " + clues[clue].clue_type + " - target char: " + clues[clue].target_character + " - fate aspect: " + clues[clue].fate_aspect + " - Description: " + clues[clue].description + " - Difficulty: " + clues[clue].difficulty + " - prerequisites: " + clues[clue].prerequisites)
+    print("=" * 80)
+    print("Antarctic Mystery Validator")
+    print("=" * 80)
+    print()
 
-# for scene in scenes:
-#     print("id:" + scene + " - " + scenes[scene].name + " - " + scenes[scene].timeline_day + " - " + scenes[scene].characters_present + " - Characters dead: " + scenes[scene].characters_dead + " - " + scenes[scene].dialogue_speakers)
+    # Load data
+    print("Loading data files...")
+    try:
+        characters = load_characters(characters_file)
+        print(f"✓ Loaded {len(characters)} characters")
 
-validation_results = {
-    "check_everyone_appears": validators.check_everyone_appears(characters, scenes),
-    "check_every_death_has_a_scene": validators.check_every_death_has_a_scene(characters, scenes),
-    "check_every_scene_has_at_least_one_character": validators.check_every_scene_has_at_least_one_character(scenes)
-}
+        scene_evidence = load_scene_evidence(evidence_file)
+        print(f"✓ Loaded {len(scene_evidence)} scene evidence records")
+
+        dialogue = load_dialogue(dialogue_file)
+        print(f"✓ Loaded {len(dialogue)} dialogue lines")
+        print()
+
+    except Exception as e:
+        print(f"✗ Error loading data: {e}")
+        return 1
+
+    # Run validations
+    print("Running validation checks...")
+    print()
+
+    validation_results = {
+        "Everyone Appears": validators.check_everyone_appears(
+            characters, scene_evidence
+        ),
+        "Death Scenes Valid": validators.check_every_death_has_a_scene(
+            characters, scene_evidence
+        ),
+        "Characters Have Identifying Clues": validators.check_every_character_has_identifying_clues(
+            characters, scene_evidence
+        ),
+        "Scenes Have Characters": validators.check_scenes_have_characters(
+            scene_evidence
+        ),
+        "Dialogue Speakers Exist": validators.check_dialogue_speakers_exist(
+            characters, dialogue
+        ),
+    }
+
+    # Generate report
+    generate_simple_report(validation_results)
+
+    # Return exit code
+    all_passed = all(passed for passed, _ in validation_results.values())
+    return 0 if all_passed else 1
 
 
-generate_simple_report(validation_results)
-
-    
-# 4. **Practice exercises:**
-#    - Count how many characters died
-#    - List all unique death causes
-#    - Find which scene has the most deaths
-
-# dead_characters = set()
-# for scene in scenes:
-#     dead_characters.update(scenes[scene]['characters_dead'].strip("[]").replace('"', '').replace("'", "").split(", "))
-
-# print("dead characters: " + ", ".join(dead_characters))
-
-# unique_death_causes = set()
-# for character in characters:
-#     if characters[character]['cause_of_death']:
-#         unique_death_causes.add(characters[character]['cause_of_death'])
-
-# print("unique death causes: " + ", ".join(unique_death_causes))
-
-# death_counts = {}
-# for scene in scenes:
-#     dead_list = scenes[scene]['characters_dead'].strip("[]").replace('"', '').replace("'", "").split(", ")
-#     death_counts[scene] = len([d for d in dead_list if d])
-#     print(scene)
-#     print(f"Scene {scenes[scene]['name']} has {death_counts[scene]} deaths")
-
-# max_deaths_scene = max(death_counts, key=death_counts.get)
-# print(f"Scene with most deaths: {scenes[max_deaths_scene]['name']} with {death_counts[max_deaths_scene]} deaths")
+if __name__ == "__main__":
+    exit(main())
