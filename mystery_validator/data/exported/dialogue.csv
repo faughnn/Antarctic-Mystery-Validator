@@ -1,0 +1,276 @@
+﻿sceneNumber,lineNumber,speaker,text,displayTime
+1,1,Thomas Wilson,Fire! FIRE!,1.5
+1,2,Thomas Wilson,Get the extinguisher!,1.5
+1,3,John Jackson,It's spreading too fast!,1.5
+1,4,,*screaming*,1.5
+1,5,,*crackling flames*,1.5
+2,1,Ivan Novak,Those wires are exposed!,1.5
+2,2,Thomas Wilson,I see them.,1.5
+2,3,Carlos Tanaka,Then why are you-,1.5
+2,4,,*ZAP*,1.5
+2,5,,*cry of pain*,1.5
+2,6,,*silence*,1.5
+3,1,Kira Ahmed,Fire! FIRE!,1.5
+3,2,Emma Garcia,Get the extinguisher!,1.5
+3,3,Erik Kim,It's spreading too fast!,1.5
+3,4,,*screaming*,1.5
+3,5,,*crackling flames*,1.5
+4,1,Dr. Elena Novak,The electrical panel is sparking!,1.65
+4,2,Prof. Emma Davis,Shut it down!,1.5
+4,3,Ingrid Murphy,I'm trying!,1.5
+4,4,,*explosion*,1.5
+4,5,,*screaming*,1.5
+4,6,,*fire alarm*,1.5
+5,1,Svetlana Sato,You're making a big mistake.,1.5
+5,2,Nora Patel,The only mistake was trusting you.,1.7
+5,3,,*struggle*,1.5
+5,4,,*impact*,1.5
+5,5,,*thud*,1.5
+6,1,Thomas Wilson,You've been stealing from the supply room!,2.1
+6,2,Sophie Khan,Prove it.,1.5
+6,3,Amara Rodriguez,I have proof. And I'm turning you in.,1.85
+6,4,Prof. Yuki Suzuki,I don't think so.,1.5
+6,5,,*struggle*,1.5
+6,6,,*gasp*,1.5
+6,7,Sakura Tanaka,Why...,1.5
+7,1,Ivan Sato,I've made too many mistakes.,1.5
+7,2,Sophie Khan,Everyone makes mistakes. It's not too late.,2.15
+7,3,Sophie Khan,For me it is.,1.5
+7,4,Prof. Ivan Popov,Please... don't do anything-,1.5
+7,5,,*footsteps running away*,1.5
+8,1,Sakura Tanaka,I trusted you!,1.5
+8,2,Diego Ito,That was your first mistake.,1.5
+8,3,Leila Larsen,What are you-,1.5
+8,4,,*struggle*,1.5
+8,5,,*choking sounds*,1.5
+8,6,,*thud*,1.5
+9,1,Emma Nakamura,You've been stealing from the supply room!,2.1
+9,2,Prof. Ivan Popov,Prove it.,1.5
+9,3,Prof. Magnus Wilson,I have proof. And I'm turning you in.,1.85
+9,4,Prof. Ivan Popov,I don't think so.,1.5
+9,5,,*struggle*,1.5
+9,6,,*gasp*,1.5
+9,7,Dr. Chen Smith,Why...,1.5
+10,1,Nikolai Kozlov,You've been stealing from the supply room!,2.1
+10,2,Sophie Lee,Prove it.,1.5
+10,3,Dr. Zoe Ivanov,I have proof. And I'm turning you in.,1.85
+10,4,Kira Ahmed,I don't think so.,1.5
+10,5,,*struggle*,1.5
+10,6,,*gasp*,1.5
+10,7,Erik Khan,Why...,1.5
+11,1,Ivan Sato,I can't do this anymore.,1.5
+11,2,Prof. Anton Garcia,Don't talk like that. We'll get through this.,2.25
+11,3,Sophie Khan,No. I won't.,1.5
+11,4,Leila Larsen,Wait! What are you-,1.5
+11,5,,*door slam*,1.5
+11,6,,*silence*,1.5
+12,1,Nora Ali,Put the weapon down!,1.5
+12,2,Dr. Amara Pavlov,You don't understand what they did!,1.75
+12,3,Lucia Harris,There's always another way!,1.5
+12,4,Nora Ali,Not for me.,1.5
+12,5,,*GUNSHOT*,1.5
+13,1,Prof. Magnus Wilson,You're making a big mistake.,1.5
+13,2,Svetlana Sato,The only mistake was trusting you.,1.7
+13,3,,*struggle*,1.5
+13,4,,*impact*,1.5
+13,5,,*thud*,1.5
+14,1,Magnus Davis,We need to restore power.,1.5
+14,2,Diego Ito,The system is still wet from the leak!,1.9
+14,3,Dr. Elena Novak,I can handle it.,1.5
+14,4,,*electrical crackling*,1.5
+14,5,,*scream*,1.5
+15,1,Nikolai Kozlov,Back off!,1.5
+15,2,Dr. Marcus Tanaka,Just give us the supplies!,1.5
+15,3,Leila Larsen,I said BACK OFF!,1.5
+15,4,,*crash*,1.5
+15,5,,*heavy impact*,1.5
+15,6,,*silence*,1.5
+16,1,Ingrid Novak,Want some?,1.5
+16,2,Leila Larsen,"Sure, what is it?",1.5
+16,3,Dr. Amara Pavlov,Something special. Just for you.,1.6
+16,4,,*pause*,1.5
+16,5,Henrik Singh,I can't... breathe...,1.5
+16,6,,*gasping*,1.5
+17,1,Dr. Lucia Petrov,I know what you did to them.,1.5
+17,2,John Jackson,You know nothing.,1.5
+17,3,Dr. Lucia Petrov,I know enough.,1.5
+17,4,,*sudden movement*,1.5
+17,5,,*gasp*,1.5
+17,6,Dr. Lucia Petrov,You... you actually...,1.5
+18,1,Diego Ito,Fire! FIRE!,1.5
+18,2,Emma Garcia,Get the extinguisher!,1.5
+18,3,Magnus Davis,It's spreading too fast!,1.5
+18,4,,*screaming*,1.5
+18,5,,*crackling flames*,1.5
+19,1,Prof. Anton Garcia,I've made too many mistakes.,1.5
+19,2,Ingrid Sato,Everyone makes mistakes. It's not too late.,2.15
+19,3,Carlos Tanaka,For me it is.,1.5
+19,4,Ingrid Sato,Please... don't do anything-,1.5
+19,5,,*footsteps running away*,1.5
+20,1,Nora Patel,Put down the knife!,1.5
+20,2,Carlos Tanaka,You left me no choice!,1.5
+20,3,Carlos Tanaka,We can talk about this!,1.5
+20,4,,*struggle*,1.5
+20,5,,*scream*,1.5
+21,1,Erik Khan,You've been stealing from the supply room!,2.1
+21,2,Dr. Lucia Petrov,Prove it.,1.5
+21,3,Lucia Harris,I have proof. And I'm turning you in.,1.85
+21,4,Erik Khan,I don't think so.,1.5
+21,5,,*struggle*,1.5
+21,6,,*gasp*,1.5
+21,7,Rebecca Rodriguez,Why...,1.5
+22,1,Nikolai Kozlov,Oxygen levels dropping!,1.5
+22,2,Prof. Magnus Wilson,The ventilation system is down!,1.55
+22,3,Erik Kim,I can't... can't breathe...,1.5
+22,4,,*gasping*,1.5
+22,5,,*silence*,1.5
+23,1,Henrik Taylor,Let me explain!,1.5
+23,2,Carlos Tanaka,No more lies!,1.5
+23,3,,*struggle*,1.5
+23,4,,*gasping for air*,1.5
+23,5,,*thud*,1.5
+24,1,Elena Kim,The coffee tastes weird.,1.5
+24,2,Dr. Lucia Petrov,Weird how?,1.5
+24,3,John Harris,I don't know... bitter?,1.5
+24,4,Felipe Suzuki,You feeling okay?,1.5
+24,5,Ingrid Novak,I... I don't feel right...,1.5
+24,6,,*coughing*,1.5
+24,7,,*thud*,1.5
+25,1,Dr. Chen Smith,Stop struggling. It'll be over soon.,1.8
+25,2,,*muffled sounds*,1.5
+25,3,,*struggle*,1.5
+25,4,,*silence*,1.5
+26,1,Carlos Pavlov,Watch your step up there!,1.5
+26,2,Nora Patel,I've got it!,1.5
+26,3,,*creaking*,1.5
+26,4,Carlos Pavlov,Oh no-,1.5
+26,5,,*scream*,1.5
+26,6,,*crash*,1.5
+27,1,Prof. Amara Wilson,You're making a big mistake.,1.5
+27,2,Lucia Harris,The only mistake was trusting you.,1.7
+27,3,,*struggle*,1.5
+27,4,,*impact*,1.5
+27,5,,*thud*,1.5
+28,1,John Harris,Put down the knife!,1.5
+28,2,Prof. Aisha Tanaka,You left me no choice!,1.5
+28,3,Lucia Harris,We can talk about this!,1.5
+28,4,,*struggle*,1.5
+28,5,,*scream*,1.5
+29,1,Erik Kim,Someone's trapped in there!,1.5
+29,2,Alice Wilson,The door is too hot!,1.5
+29,3,Erik Kim,We have to try!,1.5
+29,4,,*screaming from inside*,1.5
+29,5,,*crackling*,1.5
+30,1,Svetlana Sato,The electrical panel is sparking!,1.65
+30,2,Alice Wilson,Shut it down!,1.5
+30,3,Alice Wilson,I'm trying!,1.5
+30,4,,*explosion*,1.5
+30,5,,*screaming*,1.5
+30,6,,*fire alarm*,1.5
+31,1,Prof. Aisha Tanaka,You've been stealing from the supply room!,2.1
+31,2,Nora Patel,Prove it.,1.5
+31,3,Nora Patel,I have proof. And I'm turning you in.,1.85
+31,4,Prof. Aisha Tanaka,I don't think so.,1.5
+31,5,,*struggle*,1.5
+31,6,,*gasp*,1.5
+31,7,Nora Patel,Why...,1.5
+32,1,Dr. Lucia Petrov,Air pressure failure in sector 3!,1.65
+32,2,Prof. Aisha Tanaka,Seal the doors!,1.5
+32,3,Henrik Singh,They're not responding!,1.5
+32,4,,*alarm*,1.5
+32,5,,*gasping*,1.5
+33,1,Magnus Davis,Want some?,1.5
+33,2,John Harris,"Sure, what is it?",1.5
+33,3,Erik Jensen,Something special. Just for you.,1.6
+33,4,,*pause*,1.5
+33,5,John Harris,I can't... breathe...,1.5
+33,6,,*gasping*,1.5
+34,1,Lucia Harris,Stop struggling. It'll be over soon.,1.8
+34,2,,*muffled sounds*,1.5
+34,3,,*struggle*,1.5
+34,4,,*silence*,1.5
+35,1,Lucia Harris,You're making a big mistake.,1.5
+35,2,Lucia Harris,The only mistake was trusting you.,1.7
+35,3,,*struggle*,1.5
+35,4,,*impact*,1.5
+35,5,,*thud*,1.5
+36,1,Sophie Lee,The catwalk is unstable!,1.5
+36,2,Sophie Lee,I can make it across!,1.5
+36,3,Sophie Lee,No! Wait!,1.5
+36,4,,*metal creaking*,1.5
+36,5,,*CRACK*,1.5
+36,6,,*scream*,1.5
+36,7,,*impact*,1.5
+37,1,Henrik Khan,Don't touch that panel! It's live!,1.7
+37,2,Svetlana Sato,I know what I'm doing!,1.5
+37,3,John Harris,No! Stop!,1.5
+37,4,,*ZAP*,1.5
+37,5,,*scream*,1.5
+37,6,,*thud*,1.5
+38,1,Sophie Lee,Has anyone seen them?,1.5
+38,2,David Sokolov,Not since last night.,1.5
+38,3,Sophie Lee,Check their quarters.,1.5
+38,4,,*door opening*,1.5
+38,5,Sophie Lee,Oh god... OH GOD!,1.5
+39,1,Oliver Nielsen,The mask... give me the mask!,1.5
+39,2,Ingrid Sato,There's only one.,1.5
+39,3,Oliver Nielsen,Please!,1.5
+39,4,Oliver Nielsen,I'm sorry.,1.5
+39,5,,*wheezing*,1.5
+39,6,,*thud*,1.5
+40,1,Svetlana Sato,You're making a big mistake.,1.5
+40,2,Svetlana Sato,The only mistake was trusting you.,1.7
+40,3,,*struggle*,1.5
+40,4,,*impact*,1.5
+40,5,,*thud*,1.5
+41,1,Oliver Nielsen,Stop struggling. It'll be over soon.,1.8
+41,2,,*muffled sounds*,1.5
+41,3,,*struggle*,1.5
+41,4,,*silence*,1.5
+42,1,John Harris,We need to restore power.,1.5
+42,2,John Harris,The system is still wet from the leak!,1.9
+42,3,Maria Ahmed,I can handle it.,1.5
+42,4,,*electrical crackling*,1.5
+42,5,,*scream*,1.5
+43,1,Hana Thomas,I can't do this anymore.,1.5
+43,2,Hana Thomas,Don't talk like that. We'll get through this.,2.25
+43,3,Alice Wilson,No. I won't.,1.5
+43,4,Alice Wilson,Wait! What are you-,1.5
+43,5,,*door slam*,1.5
+43,6,,*silence*,1.5
+44,1,Alice Wilson,Warning: pressure levels critical!,1.7
+44,2,Alice Wilson,Shut down the system!,1.5
+44,3,Alice Wilson,It's not responding!,1.5
+44,4,Alice Wilson,Everyone out! NOW!,1.5
+44,5,,*EXPLOSION*,1.5
+45,1,Prof. Diego Yamamoto,The fuel line is compromised!,1.5
+45,2,Erik Jensen,Evacuate the sector!,1.5
+45,3,Erik Jensen,There's no time!,1.5
+45,4,,*EXPLOSION*,1.5
+45,5,,*alarm*,1.5
+46,1,Prof. Diego Yamamoto,I know what you did to them.,1.5
+46,2,Prof. Diego Yamamoto,You know nothing.,1.5
+46,3,Prof. Diego Yamamoto,I know enough.,1.5
+46,4,,*sudden movement*,1.5
+46,5,,*gasp*,1.5
+46,6,Prof. Diego Yamamoto,You... you actually...,1.5
+47,1,Alice Wilson,Don't look down.,1.5
+47,2,Alice Wilson,Too late. I can't-,1.5
+47,3,Alice Wilson,Just grab my hand!,1.5
+47,4,,*slipping sounds*,1.5
+47,5,,*scream*,1.5
+47,6,,*distant impact*,1.5
+48,1,Elena Kim,I know what you've been hiding.,1.55
+48,2,Elena Kim,You're making a mistake.,1.5
+48,3,Elena Kim,Am I? Let's find out.,1.5
+48,4,,*GUNSHOT*,1.5
+49,1,Henrik Singh,Blizzard's getting worse out there.,1.75
+49,2,Henrik Singh,We can't stay in this wing. No power.,1.85
+49,3,Henrik Singh,Then we move to the main building.,1.7
+49,4,Henrik Singh,I'll never make it... too cold already...,2.05
+49,5,,*wind*,1.5
+50,1,Prof. Amara Wilson,It didn't have to be this way.,1.5
+50,2,Prof. Amara Wilson,Then why?,1.5
+50,3,Prof. Amara Wilson,Because you wouldn't stop asking questions.,2.15
+50,4,,*sharp intake of breath*,1.5
+50,5,,*thud*,1.5

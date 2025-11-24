@@ -1,0 +1,10 @@
+id,name,role,nationality,death_scene,cause_of_death,killer,relationships
+chen,Dr. Sarah Chen,Chinese,Station Commander,2,frozen,
+wilson,Dr. James Wilson,American,Meteorologist,2,frozen,
+santos,Dr. Maria Santos,Spanish,Biologist,4,blunt_trauma,mueller
+petrov,Dr. Alex Petrov,Russian,Geologist,6,hanging,
+park,Dr. Lisa Park,Korean,Communications Officer,5,blunt_trauma,petrov
+bradley,Dr. Tom Bradley,Canadian,Chief Engineer,1,explosion,martinez
+miller,Robert Miller,English,Cook,7,stabbed,martinez
+martinez,David Martinez,Mexican,Operations & Logistics Officer,8,poison,santos
+mueller,Dr. Klaus Mueller,German,Psychologist,alive,

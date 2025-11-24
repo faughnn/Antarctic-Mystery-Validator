@@ -1,0 +1,7 @@
+id,name,timeline_day,order_shown_to_player, characters_present,characters_dead,dialogue_speakers, clues
+1,Research Server Room - The Sabotage,1,1,"[""martinez"", ""bradley"", ""wilson""]","[""bradley""]","{""bradley"": [1, 2, 3, 4], ""martinez"": [1]}"
+2,Outside Station - Lost in Blizzard,1,2,"[""wilson"", ""chen""]","[""wilson"", ""chen""]","{""wilson"": [1, 3, 5], ""chen"": [2, 4, 6]}"
+3,East Wing Kitchen - The Raid,28,3,"[""petrov"", ""miller"", ""santos""]","[""miller""]","{""miller"": [1, 3], ""petrov"": [2, 4]}"
+4,West Wing Corridor - Retaliation,28,4,"[""mueller"", ""santos"", ""park""]","[""santos""]","{""santos"": [1, 3], ""mueller"": [2], ""park"": [4]}"
+5,Communications Room - The Radio Discovery,28,5,"[""petrov"", ""park"", ""martinez""]","[""park""]","{""petrov"": [1, 3, 5, 6], ""park"": [2, 4]}"
+6,Storage Room - The Truth,29,6,"[""mueller"", ""martinez"", ""petrov""]","[""petrov"", ""martinez""]","{""martinez"": [1, 2, 4], ""mueller"": [3]}"
