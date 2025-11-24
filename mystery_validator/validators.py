@@ -158,3 +158,278 @@ def check_dialogue_speakers_exist(
 
     unique_speakers = len(set(d.speaker for d in dialogue if d.speaker.strip()))
     return (True, f"All {unique_speakers} dialogue speakers are valid characters.")
+
+
+# ============================================================================
+# ANALYTICAL VALIDATORS (Obra Dinn-style game balance)
+# ============================================================================
+
+def analyze_clues_per_character(
+    characters: Dict[str, Character],
+    scene_evidence: List[SceneEvidence]
+) -> Dict[str, Dict]:
+    """Analyze how many identifying clues each character has.
+
+    Returns dict with character names as keys and analysis as values:
+    {
+        'character_name': {
+            'total_clues': int,
+            'clue_types': {
+                'visual': int,
+                'dialogue': int,
+                'contextual': int,
+                ...
+            },
+            'scenes_with_clues': int
+        }
+    }
+    """
+    analysis = {}
+
+    for character_name in characters:
+        char_evidence = [ev for ev in scene_evidence if ev.character_name == character_name]
+
+        visual_clues = 0
+        dialogue_clues = 0
+        contextual_clues = 0
+        relationship_clues = 0
+        role_clues = 0
+        scenes_with_clues = set()
+
+        for ev in char_evidence:
+            has_clue_in_scene = False
+
+            # Visual clues
+            if ev.uniform_visible:
+                visual_clues += 1
+                has_clue_in_scene = True
+            if ev.holding_something_distinctive:
+                visual_clues += 1
+                has_clue_in_scene = True
+            if ev.distinctive_features_visible:
+                visual_clues += 1
+                has_clue_in_scene = True
+            if ev.body_position_relevant:
+                visual_clues += 1
+                has_clue_in_scene = True
+            if ev.additional_visual_clues:
+                visual_clues += 1
+                has_clue_in_scene = True
+
+            # Dialogue clues
+            if ev.accent_audible:
+                dialogue_clues += 1
+                has_clue_in_scene = True
+            if ev.name_mentioned_in_dialogue:
+                dialogue_clues += 1
+                has_clue_in_scene = True
+            if ev.additional_dialogue_clues:
+                dialogue_clues += 1
+                has_clue_in_scene = True
+
+            # Contextual clues
+            if ev.environmental_context_relevant:
+                contextual_clues += 1
+                has_clue_in_scene = True
+            if ev.spatial_relationship_visible:
+                contextual_clues += 1
+                has_clue_in_scene = True
+            if ev.additional_contextual_clues:
+                contextual_clues += 1
+                has_clue_in_scene = True
+
+            # Relationship clues
+            if ev.relationship_mentioned:
+                relationship_clues += 1
+                has_clue_in_scene = True
+
+            # Role clues
+            if ev.role_mentioned:
+                role_clues += 1
+                has_clue_in_scene = True
+            if ev.role_behaviour_visible:
+                role_clues += 1
+                has_clue_in_scene = True
+
+            if has_clue_in_scene:
+                scenes_with_clues.add(ev.scene_number)
+
+        total_clues = visual_clues + dialogue_clues + contextual_clues + relationship_clues + role_clues
+
+        analysis[character_name] = {
+            'total_clues': total_clues,
+            'clue_types': {
+                'visual': visual_clues,
+                'dialogue': dialogue_clues,
+                'contextual': contextual_clues,
+                'relationship': relationship_clues,
+                'role': role_clues
+            },
+            'scenes_with_clues': len(scenes_with_clues),
+            'difficulty': _calculate_difficulty(total_clues, len(scenes_with_clues))
+        }
+
+    return analysis
+
+
+def _calculate_difficulty(clue_count: int, scene_count: int) -> str:
+    """Calculate character difficulty rating based on clue and scene counts."""
+    score = clue_count + (scene_count * 0.5)
+
+    if score >= 8:
+        return "EASY"
+    elif score >= 5:
+        return "MEDIUM"
+    elif score >= 3:
+        return "HARD"
+    else:
+        return "VERY HARD"
+
+
+def analyze_character_appearances(
+    characters: Dict[str, Character],
+    scene_evidence: List[SceneEvidence]
+) -> Dict[str, int]:
+    """Count how many scenes each character appears in.
+
+    Returns dict with character names as keys and scene count as values.
+    """
+    appearances = {name: 0 for name in characters}
+
+    for character_name in characters:
+        char_scenes = set(
+            ev.scene_number for ev in scene_evidence
+            if ev.character_name == character_name
+        )
+        appearances[character_name] = len(char_scenes)
+
+    return appearances
+
+
+def check_timeline_consistency(
+    characters: Dict[str, Character],
+    scene_evidence: List[SceneEvidence]
+) -> Tuple[bool, str]:
+    """Check for timeline inconsistencies - characters appearing after death (ghosts).
+
+    Validates that:
+    1. Dead characters don't appear in scenes after their death
+    2. Killers are present in the death scene
+    """
+    issues = []
+
+    for character in characters.values():
+        if not character.is_dead():
+            continue
+
+        death_scene = character.death_scene
+
+        # Find all scenes this character appears in
+        char_appearances = [
+            ev for ev in scene_evidence
+            if ev.character_name == character.name
+        ]
+
+        # Check for appearances after death
+        for ev in char_appearances:
+            if ev.scene_number > death_scene and not ev.dies_in_this_scene:
+                issues.append(
+                    f"GHOST: {character.name} appears in scene {ev.scene_number} "
+                    f"but died in scene {death_scene}"
+                )
+
+        # Check if killer was present at death scene
+        if character.killer and character.killer != "Accident":
+            killer_at_death_scene = any(
+                ev.character_name == character.killer and ev.scene_number == death_scene
+                for ev in scene_evidence
+            )
+
+            if not killer_at_death_scene and character.killer in characters:
+                issues.append(
+                    f"TIMELINE ERROR: {character.killer} killed {character.name} in scene {death_scene} "
+                    f"but killer was not present in that scene"
+                )
+
+    if issues:
+        return (False, "\n".join(issues))
+
+    dead_count = sum(1 for c in characters.values() if c.is_dead())
+    return (True, f"Timeline consistent for all {dead_count} deaths - no ghosts detected.")
+
+
+def analyze_character_difficulty(
+    characters: Dict[str, Character],
+    clue_analysis: Dict[str, Dict]
+) -> Dict[str, List[str]]:
+    """Group characters by difficulty rating.
+
+    Returns dict with difficulty levels as keys and lists of character names as values.
+    """
+    by_difficulty = {
+        'EASY': [],
+        'MEDIUM': [],
+        'HARD': [],
+        'VERY HARD': []
+    }
+
+    for character_name, analysis in clue_analysis.items():
+        difficulty = analysis['difficulty']
+        by_difficulty[difficulty].append(character_name)
+
+    return by_difficulty
+
+
+def check_difficulty_balance(
+    difficulty_groups: Dict[str, List[str]]
+) -> Tuple[bool, str]:
+    """Validate that difficulty distribution is reasonable.
+
+    A balanced game should have:
+    - Some easy characters (to get started)
+    - Majority medium difficulty
+    - Some hard characters (for challenge)
+    - Very few "very hard" characters
+    """
+    total = sum(len(chars) for chars in difficulty_groups.values())
+    easy_count = len(difficulty_groups['EASY'])
+    medium_count = len(difficulty_groups['MEDIUM'])
+    hard_count = len(difficulty_groups['HARD'])
+    very_hard_count = len(difficulty_groups['VERY HARD'])
+
+    issues = []
+    warnings = []
+
+    # Check for critical issues
+    if easy_count == 0:
+        issues.append("No EASY characters - players may struggle to get started")
+
+    if very_hard_count > total * 0.2:
+        issues.append(
+            f"{very_hard_count} VERY HARD characters ({very_hard_count/total*100:.0f}%) - "
+            f"too many unsolvable characters"
+        )
+
+    # Check for warnings
+    if easy_count < 3:
+        warnings.append(f"Only {easy_count} EASY characters - consider adding more entry points")
+
+    if medium_count < total * 0.3:
+        warnings.append(
+            f"Only {medium_count} MEDIUM characters ({medium_count/total*100:.0f}%) - "
+            f"difficulty curve may be too steep"
+        )
+
+    # Build report
+    report_lines = [
+        f"Difficulty distribution: EASY={easy_count}, MEDIUM={medium_count}, "
+        f"HARD={hard_count}, VERY HARD={very_hard_count}"
+    ]
+
+    if issues:
+        report_lines.extend(issues)
+    if warnings:
+        report_lines.extend(warnings)
+
+    passed = len(issues) == 0
+    return (passed, "\n".join(report_lines))

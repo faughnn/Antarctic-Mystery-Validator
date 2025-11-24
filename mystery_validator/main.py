@@ -43,6 +43,14 @@ def main():
         print(f"✗ Error loading data: {e}")
         return 1
 
+    # Run analytical checks first
+    print("Analyzing game balance...")
+    print()
+
+    clue_analysis = validators.analyze_clues_per_character(characters, scene_evidence)
+    appearance_analysis = validators.analyze_character_appearances(characters, scene_evidence)
+    difficulty_groups = validators.analyze_character_difficulty(characters, clue_analysis)
+
     # Run validations
     print("Running validation checks...")
     print()
@@ -63,10 +71,54 @@ def main():
         "Dialogue Speakers Exist": validators.check_dialogue_speakers_exist(
             characters, dialogue
         ),
+        "Timeline Consistency (No Ghosts)": validators.check_timeline_consistency(
+            characters, scene_evidence
+        ),
+        "Difficulty Balance": validators.check_difficulty_balance(
+            difficulty_groups
+        ),
     }
 
-    # Generate report
+    # Generate reports
     generate_simple_report(validation_results)
+
+    # Generate analytical report
+    print()
+    print("=" * 80)
+    print("GAME BALANCE ANALYSIS")
+    print("=" * 80)
+    print()
+
+    # Difficulty distribution summary
+    print("📊 Difficulty Distribution:")
+    for difficulty in ['EASY', 'MEDIUM', 'HARD', 'VERY HARD']:
+        count = len(difficulty_groups[difficulty])
+        percentage = (count / len(characters)) * 100
+        print(f"   {difficulty:12} {count:3} characters ({percentage:5.1f}%)")
+    print()
+
+    # Character appearance summary
+    appearances_list = sorted(appearance_analysis.items(), key=lambda x: x[1])
+    print("📍 Scene Appearances:")
+    print(f"   Min: {appearances_list[0][1]} scenes - {appearances_list[0][0]}")
+    print(f"   Max: {appearances_list[-1][1]} scenes - {appearances_list[-1][0]}")
+    avg_appearances = sum(appearance_analysis.values()) / len(appearance_analysis)
+    print(f"   Avg: {avg_appearances:.1f} scenes per character")
+    print()
+
+    # Characters needing attention (very hard + few scenes)
+    print("⚠️  Characters Needing Attention (VERY HARD):")
+    very_hard_chars = difficulty_groups['VERY HARD']
+    if very_hard_chars:
+        for char_name in sorted(very_hard_chars):
+            char_data = clue_analysis[char_name]
+            scenes = appearance_analysis[char_name]
+            print(f"   {char_name:30} {char_data['total_clues']:2} clues, {scenes:2} scenes")
+    else:
+        print("   None - all characters are solvable!")
+    print()
+
+    print("=" * 80)
 
     # Return exit code
     all_passed = all(passed for passed, _ in validation_results.values())
