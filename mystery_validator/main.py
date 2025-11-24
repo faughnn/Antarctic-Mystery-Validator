@@ -59,6 +59,7 @@ def main():
     clue_analysis = validators.analyze_clues_per_character(characters, scene_evidence)
     appearance_analysis = validators.analyze_character_appearances(characters, scene_evidence)
     difficulty_groups = validators.analyze_character_difficulty(characters, clue_analysis)
+    scene_complexity = validators.analyze_scene_complexity(scene_evidence)
 
     # Run validations
     print("Running validation checks...")
@@ -71,6 +72,9 @@ def main():
         "Death Scenes Valid": validators.check_every_death_has_a_scene(
             characters, scene_evidence
         ),
+        "Death Attribution Complete": validators.check_death_attribution_completeness(
+            characters
+        ),
         "Characters Have Identifying Clues": validators.check_every_character_has_identifying_clues(
             characters, scene_evidence
         ),
@@ -82,6 +86,12 @@ def main():
         ),
         "Timeline Consistency (No Ghosts)": validators.check_timeline_consistency(
             characters, scene_evidence
+        ),
+        "Scene Complexity": validators.check_scene_complexity(
+            scene_complexity
+        ),
+        "Clue Type Diversity": validators.check_clue_type_diversity(
+            clue_analysis
         ),
         "Difficulty Balance": validators.check_difficulty_balance(
             difficulty_groups
@@ -115,6 +125,16 @@ def main():
     print(f"   Max: {appearances_list[-1][1]} scenes - {appearances_list[-1][0]}")
     avg_appearances = sum(appearance_analysis.values()) / len(appearance_analysis)
     print(f"   Avg: {avg_appearances:.1f} scenes per character")
+    print()
+
+    # Scene complexity summary
+    from collections import Counter
+    complexity_counts = Counter(info['complexity_rating'] for info in scene_complexity.values())
+    print("🎬 Scene Complexity:")
+    print(f"   SIMPLE:       {complexity_counts['SIMPLE']:2} scenes (1-2 characters)")
+    print(f"   BALANCED:     {complexity_counts['BALANCED']:2} scenes (3-6 characters)")
+    print(f"   COMPLEX:      {complexity_counts['COMPLEX']:2} scenes (7-10 characters)")
+    print(f"   OVERWHELMING: {complexity_counts['OVERWHELMING']:2} scenes (11+ characters)")
     print()
 
     # Characters needing attention (very hard + few scenes)
