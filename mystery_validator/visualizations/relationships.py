@@ -320,6 +320,7 @@ def _generate_relationship_html(
             'shape': shape,
             'borderWidth': border_width,
             'font': {'size': 12},
+            'group': dept,  # Group nodes by department for visual clustering
         })
 
     # Convert edges to vis.js format
@@ -599,12 +600,91 @@ def _build_html_template(
 
         const network = new vis.Network(container, data, options);
 
+        // Department clustering configuration
+        const departmentColors = {
+            'Medical': 'rgba(46, 204, 113, 0.15)',
+            'Science': 'rgba(52, 152, 219, 0.15)',
+            'Engineering': 'rgba(230, 126, 34, 0.15)',
+            'Security': 'rgba(231, 76, 60, 0.15)',
+            'Communications': 'rgba(155, 89, 182, 0.15)',
+            'Logistics': 'rgba(243, 156, 18, 0.15)',
+            'Administration': 'rgba(52, 73, 94, 0.15)',
+            'Other': 'rgba(149, 165, 166, 0.15)'
+        };
+
+        let orgChartMode = false;
+
+        // Custom rendering for department backgrounds in org chart mode
+        network.on('beforeDrawing', function(ctx) {
+            if (!orgChartMode) return;
+
+            // Get positions of all nodes grouped by department
+            const departmentGroups = {};
+            nodes.forEach(node => {
+                const dept = node.group || 'Other';
+                if (!departmentGroups[dept]) {
+                    departmentGroups[dept] = [];
+                }
+                const pos = network.getPositions([node.id])[node.id];
+                if (pos) {
+                    departmentGroups[dept].push({
+                        x: pos.x,
+                        y: pos.y,
+                        size: node.size || 20
+                    });
+                }
+            });
+
+            // Draw background rectangles for each department
+            Object.keys(departmentGroups).forEach(dept => {
+                const positions = departmentGroups[dept];
+                if (positions.length === 0) return;
+
+                // Calculate bounding box for this department
+                const padding = 60;
+                const xs = positions.map(p => p.x);
+                const ys = positions.map(p => p.y);
+                const minX = Math.min(...xs) - padding;
+                const maxX = Math.max(...xs) + padding;
+                const minY = Math.min(...ys) - padding;
+                const maxY = Math.max(...ys) + padding;
+
+                // Draw rounded rectangle background
+                ctx.fillStyle = departmentColors[dept] || 'rgba(200, 200, 200, 0.15)';
+                ctx.strokeStyle = departmentColors[dept].replace('0.15', '0.4') || 'rgba(200, 200, 200, 0.4)';
+                ctx.lineWidth = 2;
+
+                const radius = 15;
+                ctx.beginPath();
+                ctx.moveTo(minX + radius, minY);
+                ctx.lineTo(maxX - radius, minY);
+                ctx.quadraticCurveTo(maxX, minY, maxX, minY + radius);
+                ctx.lineTo(maxX, maxY - radius);
+                ctx.quadraticCurveTo(maxX, maxY, maxX - radius, maxY);
+                ctx.lineTo(minX + radius, maxY);
+                ctx.quadraticCurveTo(minX, maxY, minX, maxY - radius);
+                ctx.lineTo(minX, minY + radius);
+                ctx.quadraticCurveTo(minX, minY, minX + radius, minY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw department label at top of bounding box
+                ctx.fillStyle = departmentColors[dept].replace('0.15', '0.8') || 'rgba(52, 73, 94, 0.8)';
+                ctx.font = 'bold 18px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(dept, (minX + maxX) / 2, minY - 20);
+            });
+        });
+
         // View mode switching
         document.getElementById('viewAll').addEventListener('click', function() {
             setActiveButton(this);
             showAllEdges();
+            orgChartMode = false;
             options.layout.hierarchical.enabled = false;
             network.setOptions(options);
+            network.redraw();
         });
 
         document.getElementById('viewOrg').addEventListener('click', function() {
@@ -612,8 +692,10 @@ def _build_html_template(
             hideEdgeGroup('family');
             hideEdgeGroup('killer');
             showEdgeGroup('professional');
+            orgChartMode = true;
             options.layout.hierarchical.enabled = true;
             network.setOptions(options);
+            network.redraw();
         });
 
         document.getElementById('viewFamily').addEventListener('click', function() {
@@ -621,8 +703,10 @@ def _build_html_template(
             hideEdgeGroup('professional');
             hideEdgeGroup('killer');
             showEdgeGroup('family');
+            orgChartMode = false;
             options.layout.hierarchical.enabled = false;
             network.setOptions(options);
+            network.redraw();
         });
 
         document.getElementById('viewDept').addEventListener('click', function() {
@@ -630,15 +714,19 @@ def _build_html_template(
             showEdgeGroup('professional');
             hideEdgeGroup('family');
             hideEdgeGroup('killer');
+            orgChartMode = true;
             options.layout.hierarchical.enabled = true;
             network.setOptions(options);
+            network.redraw();
         });
 
         document.getElementById('viewNationality').addEventListener('click', function() {
             setActiveButton(this);
             hideAllEdges();
+            orgChartMode = false;
             options.layout.hierarchical.enabled = false;
             network.setOptions(options);
+            network.redraw();
         });
 
         document.getElementById('viewKiller').addEventListener('click', function() {
@@ -646,8 +734,10 @@ def _build_html_template(
             hideEdgeGroup('professional');
             hideEdgeGroup('family');
             showEdgeGroup('killer');
+            orgChartMode = false;
             options.layout.hierarchical.enabled = false;
             network.setOptions(options);
+            network.redraw();
         });
 
         // Edge toggle checkboxes
