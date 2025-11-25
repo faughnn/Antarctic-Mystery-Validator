@@ -249,6 +249,9 @@ def main():
 
     relationship_path = output_dir / "relationship_network.html"
     visualizations.generate_relationship_network(characters, relationship_path)
+
+    org_chart_path = output_dir / "org_chart.html"
+    visualizations.generate_org_chart(characters, org_chart_path)
     print()
 
     # Return exit code

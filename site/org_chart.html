@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizational Chart - Antarctic Mystery</title>
+    <script src="https://unpkg.com/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        h3 {
+            color: #34495e;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        h4 {
+            color: #7f8c8d;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        #network {
+            width: 100%;
+            height: 800px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .stats-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .dept-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dept-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .legend {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .legend-section {
+            margin-bottom: 15px;
+        }
+
+        .color-box {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid #333;
+            border-radius: 3px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 5px 0;
+            color: #495057;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            #network {
+                height: 600px;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Organizational Chart</h1>
+        <p class="subtitle">Antarctic Station Alpha-7 - Hierarchical Structure & Reporting Lines</p>
+
+        <!-- Network Visualization -->
+        <div id="network"></div>
+
+        <!-- Statistics Panel -->
+        <div class="stats-panel">
+            <h3>Organization Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">60</div>
+                    <div class="stat-label">Total Staff</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Departments</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">90</div>
+                    <div class="stat-label">Reporting Links</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Hierarchy Levels</div>
+                </div>
+            </div>
+
+            <h4>Hierarchy Tiers</h4>
+            <ul>
+                <li>Tier 1 (Station Leadership): 6 people</li>
+                <li>Tier 2 (Department Heads): 0 people</li>
+                <li>Tier 3 (Senior Staff): 6 people</li>
+                <li>Tier 4 (General Staff): 48 people</li>
+            </ul>
+
+            <h4>Departments</h4>
+            <div class="dept-list">
+                <div class="dept-item"><span class="color-box" style="background:#95a5a6"></span>Other: 21</div>
+                <div class="dept-item"><span class="color-box" style="background:#3498db"></span>Science: 11</div>
+                <div class="dept-item"><span class="color-box" style="background:#e67e22"></span>Engineering: 10</div>
+                <div class="dept-item"><span class="color-box" style="background:#34495e"></span>Administration: 6</div>
+                <div class="dept-item"><span class="color-box" style="background:#2ecc71"></span>Medical: 5</div>
+                <div class="dept-item"><span class="color-box" style="background:#e74c3c"></span>Security: 4</div>
+                <div class="dept-item"><span class="color-box" style="background:#9b59b6"></span>Communications: 3</div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h3>Legend</h3>
+
+            <div class="legend-section">
+                <h4>Hierarchy Levels (Horizontal Bands)</h4>
+                <div><strong>Tier 1</strong> - Station Leadership (Directors, Commanders)</div>
+                <div><strong>Tier 2</strong> - Department Heads (Professors, Chief Officers)</div>
+                <div><strong>Tier 3</strong> - Senior Staff (Doctors, Specialists)</div>
+                <div><strong>Tier 4</strong> - General Staff</div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Departments (Vertical Grouping)</h4>
+                <div><span class="color-box" style="background:#2ecc71"></span>Medical</div>
+                <div><span class="color-box" style="background:#3498db"></span>Science</div>
+                <div><span class="color-box" style="background:#e67e22"></span>Engineering</div>
+                <div><span class="color-box" style="background:#e74c3c"></span>Security</div>
+                <div><span class="color-box" style="background:#9b59b6"></span>Communications</div>
+                <div><span class="color-box" style="background:#f39c12"></span>Logistics</div>
+                <div><span class="color-box" style="background:#34495e"></span>Administration</div>
+                <div><span class="color-box" style="background:#95a5a6"></span>Other</div>
+            </div>
+
+            <div class="legend-section">
+                <h4>Visual Elements</h4>
+                <div>■ <strong>Box Shape</strong> = Station Leadership (Tier 1)</div>
+                <div>● <strong>Circle Shape</strong> = All other staff</div>
+                <div><strong>Border Color</strong> = Department</div>
+                <div><strong>Fill Color</strong> = Nationality</div>
+                <div><strong>Blue Lines</strong> = Reporting relationship (boss → subordinate)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Network data
+        const nodesData = [{"id": 0, "name": "Alice Wilson", "role": "Station Manager", "tier": 1, "department": "Administration", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#34495e", "is_dead": true, "death_scene": 47}, {"id": 1, "name": "Amara Rodriguez", "role": "Electrician", "tier": 4, "department": "Other", "nationality": "Italian", "color": "#2c3e50", "border_color": "#95a5a6", "is_dead": true, "death_scene": 7}, {"id": 2, "name": "Carlos Pavlov", "role": "Medical Officer", "tier": 4, "department": "Medical", "nationality": "Australian", "color": "#e74c3c", "border_color": "#2ecc71", "is_dead": true, "death_scene": 28}, {"id": 3, "name": "Carlos Tanaka", "role": "Maintenance Technician", "tier": 4, "department": "Engineering", "nationality": "Russian", "color": "#7f8c8d", "border_color": "#e67e22", "is_dead": true, "death_scene": 28}, {"id": 4, "name": "David Sokolov", "role": "Engineer", "tier": 4, "department": "Engineering", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#e67e22", "is_dead": true, "death_scene": 42}, {"id": 5, "name": "Diego Ito", "role": "Climatologist", "tier": 4, "department": "Other", "nationality": "Swedish", "color": "#95a5a6", "border_color": "#95a5a6", "is_dead": true, "death_scene": 20}, {"id": 6, "name": "Dr. Amara Pavlov", "role": "Chemist", "tier": 4, "department": "Science", "nationality": "French", "color": "#27ae60", "border_color": "#3498db", "is_dead": true, "death_scene": 18}, {"id": 7, "name": "Dr. Chen Smith", "role": "IT Specialist", "tier": 3, "department": "Other", "nationality": "German", "color": "#2980b9", "border_color": "#95a5a6", "is_dead": true, "death_scene": 25}, {"id": 8, "name": "Dr. Elena Novak", "role": "Systems Analyst", "tier": 4, "department": "Other", "nationality": "Polish", "color": "#c0392b", "border_color": "#95a5a6", "is_dead": true, "death_scene": 14}, {"id": 9, "name": "Dr. Lucia Petrov", "role": "IT Specialist", "tier": 3, "department": "Other", "nationality": "German", "color": "#2980b9", "border_color": "#95a5a6", "is_dead": true, "death_scene": 32}, {"id": 10, "name": "Dr. Marcus Tanaka", "role": "Medical Officer", "tier": 4, "department": "Medical", "nationality": "Danish", "color": "#e67e22", "border_color": "#2ecc71", "is_dead": true, "death_scene": 15}, {"id": 11, "name": "Dr. Zoe Ivanov", "role": "IT Specialist", "tier": 3, "department": "Other", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#95a5a6", "is_dead": true, "death_scene": 16}, {"id": 12, "name": "Elena Kim", "role": "Maintenance Technician", "tier": 4, "department": "Engineering", "nationality": "Russian", "color": "#7f8c8d", "border_color": "#e67e22", "is_dead": true, "death_scene": 48}, {"id": 13, "name": "Emma Garcia", "role": "Maintenance Technician", "tier": 4, "department": "Engineering", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#e67e22", "is_dead": true, "death_scene": 26}, {"id": 14, "name": "Emma Nakamura", "role": "Radio Operator", "tier": 4, "department": "Communications", "nationality": "Canadian", "color": "#9b59b6", "border_color": "#9b59b6", "is_dead": true, "death_scene": 9}, {"id": 15, "name": "Erik Jensen", "role": "Meteorologist", "tier": 4, "department": "Other", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#95a5a6", "is_dead": true, "death_scene": 45}, {"id": 16, "name": "Erik Khan", "role": "Biologist", "tier": 4, "department": "Science", "nationality": "Italian", "color": "#2c3e50", "border_color": "#3498db", "is_dead": true, "death_scene": 34}, {"id": 17, "name": "Erik Kim", "role": "Field Researcher", "tier": 4, "department": "Science", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#3498db", "is_dead": true, "death_scene": 29}, {"id": 18, "name": "Felipe Suzuki", "role": "Cook", "tier": 4, "department": "Other", "nationality": "Norwegian", "color": "#d35400", "border_color": "#95a5a6", "is_dead": true, "death_scene": 24}, {"id": 19, "name": "Felipe Volkov", "role": "Field Researcher", "tier": 4, "department": "Science", "nationality": "Russian", "color": "#7f8c8d", "border_color": "#3498db", "is_dead": true, "death_scene": 32}, {"id": 20, "name": "Grace Kobayashi", "role": "Pilot", "tier": 4, "department": "Other", "nationality": "Indian", "color": "#8e44ad", "border_color": "#95a5a6", "is_dead": true, "death_scene": 2}, {"id": 21, "name": "Hana Thomas", "role": "Scientist", "tier": 4, "department": "Science", "nationality": "Italian", "color": "#2c3e50", "border_color": "#3498db", "is_dead": true, "death_scene": 43}, {"id": 22, "name": "Henrik Khan", "role": "Medical Officer", "tier": 4, "department": "Medical", "nationality": "Danish", "color": "#e67e22", "border_color": "#2ecc71", "is_dead": true, "death_scene": 37}, {"id": 23, "name": "Henrik Singh", "role": "IT Specialist", "tier": 3, "department": "Other", "nationality": "Danish", "color": "#e67e22", "border_color": "#95a5a6", "is_dead": true, "death_scene": 49}, {"id": 24, "name": "Henrik Taylor", "role": "Communications Officer", "tier": 4, "department": "Security", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#e74c3c", "is_dead": true, "death_scene": 23}, {"id": 25, "name": "Ingrid Murphy", "role": "Biologist", "tier": 4, "department": "Science", "nationality": "German", "color": "#2980b9", "border_color": "#3498db", "is_dead": true, "death_scene": 4}, {"id": 26, "name": "Ingrid Novak", "role": "Biologist", "tier": 4, "department": "Science", "nationality": "British", "color": "#f39c12", "border_color": "#3498db", "is_dead": true, "death_scene": 26}, {"id": 27, "name": "Ingrid Sato", "role": "Station Manager", "tier": 1, "department": "Administration", "nationality": "Dutch", "color": "#34495e", "border_color": "#34495e", "is_dead": true, "death_scene": 39}, {"id": 28, "name": "Ivan Novak", "role": "IT Specialist", "tier": 3, "department": "Other", "nationality": "Finnish", "color": "#16a085", "border_color": "#95a5a6", "is_dead": true, "death_scene": 5}, {"id": 29, "name": "Ivan Sato", "role": "Pilot", "tier": 4, "department": "Other", "nationality": "Spanish", "color": "#bdc3c7", "border_color": "#95a5a6", "is_dead": true, "death_scene": 30}, {"id": 30, "name": "John Harris", "role": "Biologist", "tier": 4, "department": "Science", "nationality": "Australian", "color": "#e74c3c", "border_color": "#3498db", "is_dead": true, "death_scene": 44}, {"id": 31, "name": "John Jackson", "role": "Station Manager", "tier": 1, "department": "Administration", "nationality": "Indian", "color": "#8e44ad", "border_color": "#34495e", "is_dead": true, "death_scene": 17}, {"id": 32, "name": "Kira Ahmed", "role": "Station Manager", "tier": 1, "department": "Administration", "nationality": "American", "color": "#3498db", "border_color": "#34495e", "is_dead": true, "death_scene": 10}, {"id": 33, "name": "Leila Larsen", "role": "Pilot", "tier": 4, "department": "Other", "nationality": "Swedish", "color": "#95a5a6", "border_color": "#95a5a6", "is_dead": true, "death_scene": 16}, {"id": 34, "name": "Lucia Harris", "role": "Communications Officer", "tier": 4, "department": "Security", "nationality": "Finnish", "color": "#16a085", "border_color": "#e74c3c", "is_dead": true, "death_scene": 35}, {"id": 35, "name": "Magnus Davis", "role": "Geologist", "tier": 4, "department": "Other", "nationality": "Polish", "color": "#c0392b", "border_color": "#95a5a6", "is_dead": true, "death_scene": 33}, {"id": 36, "name": "Maria Ahmed", "role": "Mechanic", "tier": 4, "department": "Engineering", "nationality": "Italian", "color": "#2c3e50", "border_color": "#e67e22", "is_dead": true, "death_scene": 42}, {"id": 37, "name": "Natasha Miller", "role": "Engineer", "tier": 4, "department": "Engineering", "nationality": "Canadian", "color": "#9b59b6", "border_color": "#e67e22", "is_dead": true, "death_scene": 3}, {"id": 38, "name": "Nikolai Kozlov", "role": "Biologist", "tier": 4, "department": "Science", "nationality": "Danish", "color": "#e67e22", "border_color": "#3498db", "is_dead": true, "death_scene": 27}, {"id": 39, "name": "Nora Ali", "role": "Station Manager", "tier": 1, "department": "Administration", "nationality": "Australian", "color": "#e74c3c", "border_color": "#34495e", "is_dead": true, "death_scene": 17}, {"id": 40, "name": "Nora Patel", "role": "Scientist", "tier": 4, "department": "Science", "nationality": "Polish", "color": "#c0392b", "border_color": "#3498db", "is_dead": true, "death_scene": 31}, {"id": 41, "name": "Oliver Murphy", "role": "IT Specialist", "tier": 3, "department": "Other", "nationality": "Italian", "color": "#2c3e50", "border_color": "#95a5a6", "is_dead": true, "death_scene": 1}, {"id": 42, "name": "Oliver Nielsen", "role": "Electrician", "tier": 4, "department": "Other", "nationality": "Polish", "color": "#c0392b", "border_color": "#95a5a6", "is_dead": true, "death_scene": 41}, {"id": 43, "name": "Prof. Aisha Tanaka", "role": "Medical Officer", "tier": 4, "department": "Medical", "nationality": "Chinese", "color": "#1abc9c", "border_color": "#2ecc71", "is_dead": true, "death_scene": 32}, {"id": 44, "name": "Prof. Alice Berg", "role": "Cook", "tier": 4, "department": "Other", "nationality": "Japanese", "color": "#f1c40f", "border_color": "#95a5a6", "is_dead": true, "death_scene": 36}, {"id": 45, "name": "Prof. Amara Wilson", "role": "Biologist", "tier": 4, "department": "Science", "nationality": "Danish", "color": "#e67e22", "border_color": "#3498db", "is_dead": true, "death_scene": 50}, {"id": 46, "name": "Prof. Andre Lopez", "role": "Engineer", "tier": 4, "department": "Engineering", "nationality": "Swedish", "color": "#95a5a6", "border_color": "#e67e22", "is_dead": true, "death_scene": 13}, {"id": 47, "name": "Prof. Anton Garcia", "role": "Security Officer", "tier": 4, "department": "Security", "nationality": "Brazilian", "color": "#2ecc71", "border_color": "#e74c3c", "is_dead": true, "death_scene": 19}, {"id": 48, "name": "Prof. Diego Wilson", "role": "Mechanic", "tier": 4, "department": "Engineering", "nationality": "Polish", "color": "#c0392b", "border_color": "#e67e22", "is_dead": true, "death_scene": 2}, {"id": 49, "name": "Prof. Diego Yamamoto", "role": "Station Manager", "tier": 1, "department": "Administration", "nationality": "Norwegian", "color": "#d35400", "border_color": "#34495e", "is_dead": true, "death_scene": 46}, {"id": 50, "name": "Prof. Emma Davis", "role": "Radio Operator", "tier": 4, "department": "Communications", "nationality": "Finnish", "color": "#16a085", "border_color": "#9b59b6", "is_dead": true, "death_scene": 4}, {"id": 51, "name": "Prof. Ivan Popov", "role": "Mechanic", "tier": 4, "department": "Engineering", "nationality": "Canadian", "color": "#9b59b6", "border_color": "#e67e22", "is_dead": true, "death_scene": 12}, {"id": 52, "name": "Prof. Magnus Wilson", "role": "Systems Analyst", "tier": 4, "department": "Other", "nationality": "Russian", "color": "#7f8c8d", "border_color": "#95a5a6", "is_dead": true, "death_scene": 22}, {"id": 53, "name": "Prof. Yuki Suzuki", "role": "Radio Operator", "tier": 4, "department": "Communications", "nationality": "Finnish", "color": "#16a085", "border_color": "#9b59b6", "is_dead": true, "death_scene": 18}, {"id": 54, "name": "Rebecca Rodriguez", "role": "Medical Officer", "tier": 4, "department": "Medical", "nationality": "Swedish", "color": "#95a5a6", "border_color": "#2ecc71", "is_dead": true, "death_scene": 21}, {"id": 55, "name": "Sakura Tanaka", "role": "Engineer", "tier": 4, "department": "Engineering", "nationality": "British", "color": "#f39c12", "border_color": "#e67e22", "is_dead": true, "death_scene": 8}, {"id": 56, "name": "Sophie Khan", "role": "Climatologist", "tier": 4, "department": "Other", "nationality": "Russian", "color": "#7f8c8d", "border_color": "#95a5a6", "is_dead": true, "death_scene": 11}, {"id": 57, "name": "Sophie Lee", "role": "Electrician", "tier": 4, "department": "Other", "nationality": "Indian", "color": "#8e44ad", "border_color": "#95a5a6", "is_dead": true, "death_scene": 38}, {"id": 58, "name": "Svetlana Sato", "role": "Communications Officer", "tier": 4, "department": "Security", "nationality": "Brazilian", "color": "#2ecc71", "border_color": "#e74c3c", "is_dead": true, "death_scene": 40}, {"id": 59, "name": "Thomas Wilson", "role": "Meteorologist", "tier": 4, "department": "Other", "nationality": "American", "color": "#3498db", "border_color": "#95a5a6", "is_dead": true, "death_scene": 6}];
+        const edgesData = [{"from": 7, "to": 1}, {"from": 7, "to": 5}, {"from": 7, "to": 8}, {"from": 7, "to": 15}, {"from": 7, "to": 18}, {"from": 7, "to": 20}, {"from": 7, "to": 29}, {"from": 7, "to": 33}, {"from": 7, "to": 35}, {"from": 7, "to": 42}, {"from": 7, "to": 44}, {"from": 7, "to": 52}, {"from": 7, "to": 56}, {"from": 7, "to": 57}, {"from": 7, "to": 59}, {"from": 9, "to": 1}, {"from": 9, "to": 5}, {"from": 9, "to": 8}, {"from": 9, "to": 15}, {"from": 9, "to": 18}, {"from": 9, "to": 20}, {"from": 9, "to": 29}, {"from": 9, "to": 33}, {"from": 9, "to": 35}, {"from": 9, "to": 42}, {"from": 9, "to": 44}, {"from": 9, "to": 52}, {"from": 9, "to": 56}, {"from": 9, "to": 57}, {"from": 9, "to": 59}, {"from": 11, "to": 1}, {"from": 11, "to": 5}, {"from": 11, "to": 8}, {"from": 11, "to": 15}, {"from": 11, "to": 18}, {"from": 11, "to": 20}, {"from": 11, "to": 29}, {"from": 11, "to": 33}, {"from": 11, "to": 35}, {"from": 11, "to": 42}, {"from": 11, "to": 44}, {"from": 11, "to": 52}, {"from": 11, "to": 56}, {"from": 11, "to": 57}, {"from": 11, "to": 59}, {"from": 23, "to": 1}, {"from": 23, "to": 5}, {"from": 23, "to": 8}, {"from": 23, "to": 15}, {"from": 23, "to": 18}, {"from": 23, "to": 20}, {"from": 23, "to": 29}, {"from": 23, "to": 33}, {"from": 23, "to": 35}, {"from": 23, "to": 42}, {"from": 23, "to": 44}, {"from": 23, "to": 52}, {"from": 23, "to": 56}, {"from": 23, "to": 57}, {"from": 23, "to": 59}, {"from": 28, "to": 1}, {"from": 28, "to": 5}, {"from": 28, "to": 8}, {"from": 28, "to": 15}, {"from": 28, "to": 18}, {"from": 28, "to": 20}, {"from": 28, "to": 29}, {"from": 28, "to": 33}, {"from": 28, "to": 35}, {"from": 28, "to": 42}, {"from": 28, "to": 44}, {"from": 28, "to": 52}, {"from": 28, "to": 56}, {"from": 28, "to": 57}, {"from": 28, "to": 59}, {"from": 41, "to": 1}, {"from": 41, "to": 5}, {"from": 41, "to": 8}, {"from": 41, "to": 15}, {"from": 41, "to": 18}, {"from": 41, "to": 20}, {"from": 41, "to": 29}, {"from": 41, "to": 33}, {"from": 41, "to": 35}, {"from": 41, "to": 42}, {"from": 41, "to": 44}, {"from": 41, "to": 52}, {"from": 41, "to": 56}, {"from": 41, "to": 57}, {"from": 41, "to": 59}];
+
+        // Convert to vis.js format
+        const visNodes = nodesData.map(node => ({
+            id: node.id,
+            label: node.name,
+            title: `${node.name}\n${node.role}\nTier ${node.tier} - ${node.department}\nNationality: ${node.nationality}` +
+                   (node.is_dead ? `\n☠ Died in scene ${node.death_scene}` : ''),
+            color: {
+                background: node.color,
+                border: node.border_color
+            },
+            size: 40 - (node.tier * 8),  // Tier 1=32, Tier 4=8
+            shape: node.tier === 1 ? 'box' : 'dot',
+            borderWidth: 3,
+            font: { size: 12 },
+            level: node.tier,  // Explicit level for hierarchical layout
+            group: node.department
+        }));
+
+        const visEdges = edgesData.map(edge => ({
+            from: edge.from,
+            to: edge.to,
+            color: { color: '#3498db', opacity: 0.6 },
+            width: 2,
+            arrows: { to: { enabled: true, scaleFactor: 0.8 } },
+            smooth: { type: 'cubicBezier', forceDirection: 'vertical', roundness: 0.5 }
+        }));
+
+        const nodes = new vis.DataSet(visNodes);
+        const edges = new vis.DataSet(visEdges);
+
+        // Create network
+        const container = document.getElementById('network');
+        const data = { nodes: nodes, edges: edges };
+        const options = {
+            layout: {
+                hierarchical: {
+                    enabled: true,
+                    direction: 'UD',  // Up-down (leadership at top)
+                    sortMethod: 'directed',
+                    nodeSpacing: 200,  // Horizontal spacing within tier
+                    levelSeparation: 250,  // Vertical spacing between tiers (bands)
+                    treeSpacing: 250,  // Spacing between department trees
+                    blockShifting: true,
+                    edgeMinimization: true,
+                    parentCentralization: false,
+                    shakeTowards: 'leaves'
+                }
+            },
+            physics: {
+                enabled: false  // Disable physics for stable hierarchical layout
+            },
+            interaction: {
+                hover: true,
+                navigationButtons: true,
+                keyboard: true,
+                zoomView: true,
+                dragView: true
+            },
+            nodes: {
+                font: {
+                    size: 14,
+                    color: '#2c3e50'
+                }
+            }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        // Department clustering configuration
+        const departmentColors = {
+            'Medical': 'rgba(46, 204, 113, 0.15)',
+            'Science': 'rgba(52, 152, 219, 0.15)',
+            'Engineering': 'rgba(230, 126, 34, 0.15)',
+            'Security': 'rgba(231, 76, 60, 0.15)',
+            'Communications': 'rgba(155, 89, 182, 0.15)',
+            'Logistics': 'rgba(243, 156, 18, 0.15)',
+            'Administration': 'rgba(52, 73, 94, 0.15)',
+            'Other': 'rgba(149, 165, 166, 0.15)'
+        };
+
+        // Tier band colors
+        const tierBandColors = [
+            'rgba(230, 126, 34, 0.08)',  // Tier 1 - Orange tint
+            'rgba(52, 152, 219, 0.08)',  // Tier 2 - Blue tint
+            'rgba(46, 204, 113, 0.08)',  // Tier 3 - Green tint
+            'rgba(149, 165, 166, 0.08)'  // Tier 4 - Gray tint
+        ];
+
+        // Custom rendering for tier bands and department backgrounds
+        network.on('beforeDrawing', function(ctx) {
+            // Get canvas dimensions
+            const canvasWidth = ctx.canvas.width;
+
+            // Group nodes by tier and department
+            const tierGroups = { 1: [], 2: [], 3: [], 4: [] };
+            const departmentGroups = {};
+
+            nodes.forEach(node => {
+                const pos = network.getPositions([node.id])[node.id];
+                if (pos) {
+                    const nodeData = {
+                        x: pos.x,
+                        y: pos.y,
+                        tier: node.level,
+                        dept: node.group,
+                        size: node.size || 20
+                    };
+
+                    // Add to tier group
+                    if (tierGroups[node.level]) {
+                        tierGroups[node.level].push(nodeData);
+                    }
+
+                    // Add to department group
+                    if (!departmentGroups[node.group]) {
+                        departmentGroups[node.group] = [];
+                    }
+                    departmentGroups[node.group].push(nodeData);
+                }
+            });
+
+            // Draw horizontal bands for each tier
+            Object.keys(tierGroups).forEach(tier => {
+                const positions = tierGroups[tier];
+                if (positions.length === 0) return;
+
+                const tierNum = parseInt(tier);
+                const ys = positions.map(p => p.y);
+                const minY = Math.min(...ys) - 80;
+                const maxY = Math.max(...ys) + 80;
+
+                // Get canvas bounds for full-width band
+                const bounds = network.getBoundingBox();
+                const minX = bounds.left - 200;
+                const maxX = bounds.right + 200;
+
+                // Draw full-width horizontal band
+                ctx.fillStyle = tierBandColors[tierNum - 1];
+                ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
+
+                // Draw tier label on left side
+                ctx.fillStyle = 'rgba(44, 62, 80, 0.7)';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                const tierLabels = ['Tier 1: Leadership', 'Tier 2: Dept Heads', 'Tier 3: Senior Staff', 'Tier 4: General Staff'];
+                ctx.fillText(tierLabels[tierNum - 1], minX - 10, (minY + maxY) / 2);
+            });
+
+            // Draw department backgrounds (on top of tier bands)
+            Object.keys(departmentGroups).forEach(dept => {
+                const positions = departmentGroups[dept];
+                if (positions.length === 0) return;
+
+                const padding = 50;
+                const xs = positions.map(p => p.x);
+                const ys = positions.map(p => p.y);
+                const minX = Math.min(...xs) - padding;
+                const maxX = Math.max(...xs) + padding;
+                const minY = Math.min(...ys) - padding;
+                const maxY = Math.max(...ys) + padding;
+
+                // Draw rounded rectangle background
+                ctx.fillStyle = departmentColors[dept] || 'rgba(200, 200, 200, 0.15)';
+                ctx.strokeStyle = departmentColors[dept].replace('0.15', '0.5') || 'rgba(200, 200, 200, 0.5)';
+                ctx.lineWidth = 2;
+
+                const radius = 15;
+                ctx.beginPath();
+                ctx.moveTo(minX + radius, minY);
+                ctx.lineTo(maxX - radius, minY);
+                ctx.quadraticCurveTo(maxX, minY, maxX, minY + radius);
+                ctx.lineTo(maxX, maxY - radius);
+                ctx.quadraticCurveTo(maxX, maxY, maxX - radius, maxY);
+                ctx.lineTo(minX + radius, maxY);
+                ctx.quadraticCurveTo(minX, maxY, minX, maxY - radius);
+                ctx.lineTo(minX, minY + radius);
+                ctx.quadraticCurveTo(minX, minY, minX + radius, minY);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // Draw department label at top
+                ctx.fillStyle = departmentColors[dept].replace('0.15', '0.9') || 'rgba(52, 73, 94, 0.9)';
+                ctx.font = 'bold 18px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(dept, (minX + maxX) / 2, minY - 10);
+            });
+        });
+
+        // Fit to view on load
+        network.once('stabilizationIterationsDone', function() {
+            network.fit({ animation: { duration: 1000 } });
+        });
+    </script>
+</body>
+</html>
