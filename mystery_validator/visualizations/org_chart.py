@@ -30,10 +30,9 @@ def generate_org_chart(
 
     # Build org chart data
     nodes = _build_nodes(characters, hierarchy, departments)
-    edges = _build_edges(characters, hierarchy, departments)
 
-    # Generate HTML
-    html = _generate_org_chart_html(nodes, edges, departments, hierarchy)
+    # Generate HTML (no edges - tier bands and department boxes show structure)
+    html = _generate_org_chart_html(nodes, departments, hierarchy)
 
     # Write to file
     output_path.write_text(html, encoding='utf-8')
@@ -73,27 +72,30 @@ def _infer_departments(characters: Dict[str, Character]) -> Dict[str, List[str]]
     """Infer department groupings from role titles.
 
     Returns dict of department_name -> list of character names
+    Each person is assigned to exactly ONE department.
     """
     departments = defaultdict(list)
 
     for name, char in characters.items():
         role = char.role.lower()
 
-        # Department inference based on role keywords
-        if any(x in role for x in ['medical', 'doctor', 'physician', 'nurse', 'medic']):
+        # Department inference based on role keywords (order matters - most specific first)
+        # Check specific department keywords before generic ones
+        if any(x in role for x in ['communication', 'radio', 'comms']):
+            dept = 'Communications'
+        elif any(x in role for x in ['medical', 'doctor', 'physician', 'nurse', 'medic']):
             dept = 'Medical'
         elif any(x in role for x in ['science', 'scientist', 'research', 'biologist', 'chemist', 'physicist']):
             dept = 'Science'
         elif any(x in role for x in ['engineer', 'technical', 'mechanic', 'maintenance']):
             dept = 'Engineering'
-        elif any(x in role for x in ['security', 'guard', 'officer']):
-            dept = 'Security'
-        elif any(x in role for x in ['communication', 'radio', 'comms']):
-            dept = 'Communications'
         elif any(x in role for x in ['logistics', 'supply', 'quartermaster']):
             dept = 'Logistics'
-        elif any(x in role for x in ['director', 'station', 'administrator', 'admin']):
+        elif any(x in role for x in ['director', 'station manager', 'administrator', 'admin']):
             dept = 'Administration'
+        elif any(x in role for x in ['security', 'guard', 'officer']):
+            # Generic "officer" comes after specific department officers
+            dept = 'Security'
         else:
             dept = 'Other'
 
@@ -170,44 +172,14 @@ def _build_nodes(
     return nodes
 
 
-def _build_edges(
-    characters: Dict[str, Character],
-    hierarchy: Dict[str, int],
-    departments: Dict[str, List[str]]
-) -> List[Dict]:
-    """Build edge data for reporting relationships."""
-    edges = []
-
-    # Create name to id mapping
-    name_to_id = {char.name: i for i, char in enumerate(characters.values())}
-
-    # Add professional hierarchy edges (boss → subordinate)
-    for name, tier in hierarchy.items():
-        if tier < 4:  # Not lowest tier
-            char_dept = _get_character_department(name, departments)
-            for other_name, other_tier in hierarchy.items():
-                if other_name != name and other_tier == tier + 1:
-                    other_dept = _get_character_department(other_name, departments)
-                    # Connect if same department or if this is a director (tier 1)
-                    if char_dept == other_dept or tier == 1:
-                        edges.append({
-                            'from': name_to_id[name],
-                            'to': name_to_id[other_name]
-                        })
-
-    return edges
-
-
 def _generate_org_chart_html(
     nodes: List[Dict],
-    edges: List[Dict],
     departments: Dict[str, List[str]],
     hierarchy: Dict[str, int]
 ) -> str:
     """Generate HTML for org chart visualization."""
 
     nodes_json = json.dumps(nodes)
-    edges_json = json.dumps(edges)
     dept_colors = _get_department_colors()
 
     # Count by tier
@@ -236,7 +208,7 @@ def _generate_org_chart_html(
 <body>
     <div class="container">
         <h1>🏢 Organizational Chart</h1>
-        <p class="subtitle">Antarctic Station Alpha-7 - Hierarchical Structure & Reporting Lines</p>
+        <p class="subtitle">Antarctic Station Alpha-7 - Hierarchical Structure by Tier & Department</p>
 
         <!-- Network Visualization -->
         <div id="network"></div>
@@ -252,10 +224,6 @@ def _generate_org_chart_html(
                 <div class="stat-item">
                     <div class="stat-number">{len(departments)}</div>
                     <div class="stat-label">Departments</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">{len(edges)}</div>
-                    <div class="stat-label">Reporting Links</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-number">4</div>
@@ -312,7 +280,8 @@ def _generate_org_chart_html(
                 <div>● <strong>Circle Shape</strong> = All other staff</div>
                 <div><strong>Border Color</strong> = Department</div>
                 <div><strong>Fill Color</strong> = Nationality</div>
-                <div><strong>Blue Lines</strong> = Reporting relationship (boss → subordinate)</div>
+                <div><strong>Horizontal Bands</strong> = Hierarchy tiers (top to bottom)</div>
+                <div><strong>Colored Boxes</strong> = Department grouping</div>
             </div>
         </div>
     </div>
@@ -320,7 +289,6 @@ def _generate_org_chart_html(
     <script>
         // Network data
         const nodesData = ''' + nodes_json + ''';
-        const edgesData = ''' + edges_json + ''';
 
         // Convert to vis.js format
         const visNodes = nodesData.map(node => ({
@@ -340,21 +308,11 @@ def _generate_org_chart_html(
             group: node.department
         }));
 
-        const visEdges = edgesData.map(edge => ({
-            from: edge.from,
-            to: edge.to,
-            color: { color: '#3498db', opacity: 0.6 },
-            width: 2,
-            arrows: { to: { enabled: true, scaleFactor: 0.8 } },
-            smooth: { type: 'cubicBezier', forceDirection: 'vertical', roundness: 0.5 }
-        }));
-
         const nodes = new vis.DataSet(visNodes);
-        const edges = new vis.DataSet(visEdges);
 
-        // Create network
+        // Create network (no edges - structure shown by tier bands and department boxes)
         const container = document.getElementById('network');
-        const data = { nodes: nodes, edges: edges };
+        const data = { nodes: nodes };
         const options = {
             layout: {
                 hierarchical: {
