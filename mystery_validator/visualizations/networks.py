@@ -31,7 +31,12 @@ def generate_killer_network(
 
     # Add all characters as nodes
     for name in characters:
-        G.add_node(name, is_killer=False, is_victim=False, killed_by=None)
+        G.add_node(name, is_killer=False, is_victim=False, is_accident=False, killed_by=None)
+
+    # Mark accident deaths
+    for char in characters.values():
+        if char.is_dead() and char.killer == "Accident":
+            G.nodes[char.name]['is_accident'] = True
 
     # Build edges from killer → victim relationships
     for char in characters.values():
@@ -89,6 +94,7 @@ def _calculate_network_stats(G: nx.DiGraph) -> Dict:
     pure_victims = [name for name, data in nodes_data.items() if data['is_victim'] and not data['is_killer']]
     pure_killers = [name for name, data in nodes_data.items() if data['is_killer'] and not data['is_victim']]
     both = [name for name, data in nodes_data.items() if data['is_killer'] and data['is_victim']]
+    accidents = [name for name, data in nodes_data.items() if data['is_accident']]
 
     # NetworkX-specific metrics
     cycles = list(nx.simple_cycles(G))
@@ -106,6 +112,7 @@ def _calculate_network_stats(G: nx.DiGraph) -> Dict:
         'pure_victims': len(pure_victims),
         'pure_killers': len(pure_killers),
         'killer_victims': len(both),
+        'accidents': len(accidents),
         'cycles': cycles,
         'most_central': most_central,
     }
@@ -134,6 +141,9 @@ def _generate_network_html(
         elif data['is_victim']:
             color = '#95a5a6'  # Gray - victim
             title = f"{name} (victim)"
+        elif data['is_accident']:
+            color = '#9b59b6'  # Purple - accident death
+            title = f"{name} (died in accident)"
         else:
             color = '#3498db'  # Blue - neither (survived)
             title = f"{name} (survived)"
@@ -189,6 +199,7 @@ def _generate_network_html(
         '                <span class="legend-item"><span class="color-box red"></span> Pure Killers (never killed)</span>',
         '                <span class="legend-item"><span class="color-box orange"></span> Killer-Victims (killed and were killed)</span>',
         '                <span class="legend-item"><span class="color-box gray"></span> Pure Victims (never killed)</span>',
+        '                <span class="legend-item"><span class="color-box purple"></span> Accident Deaths (no killer)</span>',
         '                <span class="legend-item"><span class="color-box blue"></span> Survivors (not involved)</span>',
         '            </div>',
         '            <p style="margin-top: 10px;"><strong>Node size</strong> = number of kills | <strong>Arrows</strong> = killer → victim</p>',
@@ -201,6 +212,7 @@ def _generate_network_html(
         f'                <li><strong>Pure Killers:</strong> {stats["pure_killers"]} (killed but never died)</li>',
         f'                <li><strong>Pure Victims:</strong> {stats["pure_victims"]} (killed but never killed anyone)</li>',
         f'                <li><strong>Killer-Victims:</strong> {stats["killer_victims"]} (killed someone AND were killed)</li>',
+        f'                <li><strong>Accident Deaths:</strong> {stats["accidents"]} (died but not murdered)</li>',
     ]
 
     if stats['serial_killers']:
@@ -362,6 +374,7 @@ def _get_network_css() -> str:
         .color-box.red { background: #e74c3c; }
         .color-box.orange { background: #f39c12; }
         .color-box.gray { background: #95a5a6; }
+        .color-box.purple { background: #9b59b6; }
         .color-box.blue { background: #3498db; }
 
         .stats {
