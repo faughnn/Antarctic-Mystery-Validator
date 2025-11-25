@@ -41,7 +41,7 @@ def generate_org_chart(
 
 
 def _infer_hierarchy(characters: Dict[str, Character]) -> Dict[str, int]:
-    """Infer organizational hierarchy tier from role titles.
+    """Infer organizational hierarchy tier from role titles and names.
 
     Returns dict of character_name -> tier (1=highest, 4=lowest)
     """
@@ -49,15 +49,16 @@ def _infer_hierarchy(characters: Dict[str, Character]) -> Dict[str, int]:
 
     for name, char in characters.items():
         role = char.role.lower()
+        name_lower = name.lower()
 
         # Tier 1: Directors and Station Command
-        if 'director' in role or 'station' in role or 'commander' in role:
+        if 'director' in role or 'station manager' in role or 'commander' in role:
             tier = 1
         # Tier 2: Department heads, Professors, Lead/Chief positions
-        elif any(x in role for x in ['prof.', 'professor', 'lead', 'chief', 'head']):
+        elif any(x in role for x in ['lead', 'chief', 'head']) or name_lower.startswith('prof.'):
             tier = 2
         # Tier 3: Doctors, Senior staff, Specialists
-        elif any(x in role for x in ['dr.', 'doctor', 'senior', 'specialist']):
+        elif any(x in role for x in ['dr.', 'doctor', 'senior', 'specialist']) or name_lower.startswith('dr.'):
             tier = 3
         # Tier 4: Everyone else
         else:
@@ -409,8 +410,17 @@ def _generate_org_chart_html(
             'rgba(149, 165, 166, 0.08)'  // Tier 4 - Gray tint
         ];
 
+        let networkReady = false;
+
+        // Wait for network to be ready before enabling custom drawing
+        network.once('afterDrawing', function() {
+            networkReady = true;
+            network.redraw();
+        });
+
         // Custom rendering for tier bands and department backgrounds
         network.on('beforeDrawing', function(ctx) {
+            if (!networkReady) return;
             // Get canvas dimensions
             const canvasWidth = ctx.canvas.width;
 
@@ -453,9 +463,17 @@ def _generate_org_chart_html(
                 const maxY = Math.max(...ys) + 80;
 
                 // Get canvas bounds for full-width band
-                const bounds = network.getBoundingBox();
-                const minX = bounds.left - 200;
-                const maxX = bounds.right + 200;
+                let minX, maxX;
+                try {
+                    const bounds = network.getBoundingBox();
+                    minX = bounds.left - 200;
+                    maxX = bounds.right + 200;
+                } catch (e) {
+                    // Fallback to calculating from all positions
+                    const allXs = positions.map(p => p.x);
+                    minX = Math.min(...allXs) - 500;
+                    maxX = Math.max(...allXs) + 500;
+                }
 
                 // Draw full-width horizontal band
                 ctx.fillStyle = tierBandColors[tierNum - 1];
@@ -512,10 +530,10 @@ def _generate_org_chart_html(
             });
         });
 
-        // Fit to view on load
-        network.once('stabilizationIterationsDone', function() {
+        // Fit to view after initial render (physics disabled, no stabilization needed)
+        setTimeout(function() {
             network.fit({ animation: { duration: 1000 } });
-        });
+        }, 100);
     </script>
 </body>
 </html>'''
