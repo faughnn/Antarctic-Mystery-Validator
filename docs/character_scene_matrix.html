@@ -1,0 +1,3502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character-Scene Matrix - Antarctic Mystery</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .legend {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .legend h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            font-size: 0.95em;
+        }
+
+        .stats {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sticky-col {
+            position: sticky;
+            left: 0;
+            background: white;
+            z-index: 5;
+        }
+
+        th.sticky-col {
+            background: #34495e;
+            z-index: 15;
+        }
+
+        .char-name {
+            text-align: left;
+            font-weight: 500;
+            min-width: 200px;
+            background: #f8f9fa;
+        }
+
+        .total {
+            font-weight: 600;
+            background: #e8f4f8;
+            min-width: 60px;
+        }
+
+        .cell {
+            font-size: 1.2em;
+        }
+
+        .appears {
+            color: #27ae60;
+        }
+
+        .dies {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .dead {
+            color: #95a5a6;
+            font-weight: bold;
+        }
+
+        .absent {
+            color: #bdc3c7;
+        }
+
+        tr:hover td {
+            background: #f0f8ff;
+        }
+
+        .footer {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            table {
+                font-size: 0.8em;
+            }
+
+            th, td {
+                padding: 5px;
+            }
+
+            .char-name {
+                min-width: 150px;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧊 Character-Scene Matrix</h1>
+        <p class="subtitle">Antarctic Station Alpha-7 Mystery</p>
+
+        <div class="legend">
+            <h3>Legend:</h3>
+            <span class="legend-item"><span class="cell appears">●</span> Appears in scene</span>
+            <span class="legend-item"><span class="cell dies">☠</span> Dies in scene</span>
+            <span class="legend-item"><span class="cell dead">✝</span> Already dead (died in earlier scene)</span>
+            <span class="legend-item"><span class="cell absent">-</span> Absent from scene</span>
+        </div>
+
+        <div class="stats">
+            <p><strong>60 characters</strong> across <strong>50 scenes</strong></p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="sticky-col">Character</th>
+                        <th class="sticky-col">Total</th>
+                        <th>S1</th>
+                        <th>S2</th>
+                        <th>S3</th>
+                        <th>S4</th>
+                        <th>S5</th>
+                        <th>S6</th>
+                        <th>S7</th>
+                        <th>S8</th>
+                        <th>S9</th>
+                        <th>S10</th>
+                        <th>S11</th>
+                        <th>S12</th>
+                        <th>S13</th>
+                        <th>S14</th>
+                        <th>S15</th>
+                        <th>S16</th>
+                        <th>S17</th>
+                        <th>S18</th>
+                        <th>S19</th>
+                        <th>S20</th>
+                        <th>S21</th>
+                        <th>S22</th>
+                        <th>S23</th>
+                        <th>S24</th>
+                        <th>S25</th>
+                        <th>S26</th>
+                        <th>S27</th>
+                        <th>S28</th>
+                        <th>S29</th>
+                        <th>S30</th>
+                        <th>S31</th>
+                        <th>S32</th>
+                        <th>S33</th>
+                        <th>S34</th>
+                        <th>S35</th>
+                        <th>S36</th>
+                        <th>S37</th>
+                        <th>S38</th>
+                        <th>S39</th>
+                        <th>S40</th>
+                        <th>S41</th>
+                        <th>S42</th>
+                        <th>S43</th>
+                        <th>S44</th>
+                        <th>S45</th>
+                        <th>S46</th>
+                        <th>S47</th>
+                        <th>S48</th>
+                        <th>S49</th>
+                        <th>S50</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="sticky-col char-name">Alice Wilson</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Amara Rodriguez</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Carlos Pavlov</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Carlos Tanaka</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">David Sokolov</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Diego Ito</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Dr. Amara Pavlov</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Dr. Chen Smith</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Dr. Elena Novak</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Dr. Lucia Petrov</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Dr. Marcus Tanaka</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Dr. Zoe Ivanov</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Elena Kim</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Emma Garcia</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Emma Nakamura</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Erik Jensen</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Erik Khan</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Erik Kim</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Felipe Suzuki</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Felipe Volkov</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Grace Kobayashi</td>
+                        <td class="sticky-col total">2</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Hana Thomas</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Henrik Khan</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Henrik Singh</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Henrik Taylor</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Ingrid Murphy</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Ingrid Novak</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Ingrid Sato</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Ivan Novak</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Ivan Sato</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">John Harris</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">John Jackson</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Kira Ahmed</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Leila Larsen</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Lucia Harris</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Magnus Davis</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Maria Ahmed</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Natasha Miller</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Nikolai Kozlov</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Nora Ali</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Nora Patel</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Oliver Murphy</td>
+                        <td class="sticky-col total">1</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Oliver Nielsen</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Aisha Tanaka</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Alice Berg</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Amara Wilson</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Andre Lopez</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Anton Garcia</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Diego Wilson</td>
+                        <td class="sticky-col total">2</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Diego Yamamoto</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Emma Davis</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Ivan Popov</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Magnus Wilson</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Prof. Yuki Suzuki</td>
+                        <td class="sticky-col total">4</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Rebecca Rodriguez</td>
+                        <td class="sticky-col total">3</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Sakura Tanaka</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Sophie Khan</td>
+                        <td class="sticky-col total">7</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Sophie Lee</td>
+                        <td class="sticky-col total">5</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Svetlana Sato</td>
+                        <td class="sticky-col total">8</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell absent">-</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                    <tr>
+                        <td class="sticky-col char-name">Thomas Wilson</td>
+                        <td class="sticky-col total">6</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell appears">●</td>
+                        <td class="cell dies">☠</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                        <td class="cell dead">✝</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>Generated by Antarctic Mystery Validator</p>
+        </div>
+    </div>
+</body>
+</html>

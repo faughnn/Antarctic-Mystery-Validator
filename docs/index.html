@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antarctic Mystery Validator - Visualizations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+
+        .viz-grid {
+            display: grid;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .viz-card {
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .viz-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .viz-card h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .viz-card p {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .viz-card a {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .viz-card a:hover {
+            background: #2980b9;
+        }
+
+        .footer {
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.9em;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Antarctic Mystery Validator</h1>
+        <p class="subtitle">Interactive Visualizations for Mystery Analysis</p>
+
+        <div class="viz-grid">
+            <div class="viz-card">
+                <div class="icon">🔪</div>
+                <h2>Killer Network</h2>
+                <p>Interactive network graph showing murder relationships. Visualizes who killed whom, death types (murdered vs accident/suicide), and serial killers. Node size represents kill count.</p>
+                <a href="killer_network.html">View Killer Network →</a>
+            </div>
+
+            <div class="viz-card">
+                <div class="icon">🌐</div>
+                <h2>Relationship Network</h2>
+                <p>Multi-layer network showing professional hierarchy, family connections, and killer relationships. Filter by department, nationality, or view organizational structure.</p>
+                <a href="relationship_network.html">View Relationship Network →</a>
+            </div>
+
+            <div class="viz-card">
+                <div class="icon">📊</div>
+                <h2>Character-Scene Matrix</h2>
+                <p>Heatmap showing which characters appear in which scenes. Helps identify character co-occurrences and scene participation patterns.</p>
+                <a href="character_scene_matrix.html">View Scene Matrix →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Antarctic Mystery Validator | Generated from mystery data</p>
+        </div>
+    </div>
+</body>
+</html>
