@@ -31,13 +31,11 @@ def generate_killer_network(
 
     # Add all characters as nodes with death type classification
     for name, char in characters.items():
-        # Classify death type (everyone should have one)
+        # Classify death type: murdered vs non-murder (accident/suicide)
         death_type = 'unknown'
         if char.is_dead():
-            if char.killer == "Accident":
-                death_type = 'accident'
-            elif char.killer == "Self-inflicted":
-                death_type = 'suicide'
+            if char.killer in ["Accident", "Self-inflicted"]:
+                death_type = 'non_murder'  # Accident or suicide - player doesn't need to distinguish
             elif char.killer:
                 death_type = 'murdered'
             else:
@@ -96,13 +94,11 @@ def _calculate_network_stats(G: nx.DiGraph) -> Dict:
     serial_killers = [(name, data['kills']) for name, data in nodes_data.items() if data['kills'] > 1]
     serial_killers.sort(key=lambda x: x[1], reverse=True)
 
-    # Categorize by death type
+    # Categorize by death type (simplified: murdered vs non-murder)
     murdered_non_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'murdered' and not data['is_killer']]
     murdered_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'murdered' and data['is_killer']]
-    accident_non_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'accident' and not data['is_killer']]
-    accident_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'accident' and data['is_killer']]
-    suicide_non_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'suicide' and not data['is_killer']]
-    suicide_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'suicide' and data['is_killer']]
+    non_murder_non_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'non_murder' and not data['is_killer']]
+    non_murder_killer = [name for name, data in nodes_data.items() if data['death_type'] == 'non_murder' and data['is_killer']]
 
     # NetworkX-specific metrics
     cycles = list(nx.simple_cycles(G))
@@ -119,10 +115,8 @@ def _calculate_network_stats(G: nx.DiGraph) -> Dict:
         'serial_killers': serial_killers,
         'murdered_non_killer': len(murdered_non_killer),
         'murdered_killer': len(murdered_killer),
-        'accident_non_killer': len(accident_non_killer),
-        'accident_killer': len(accident_killer),
-        'suicide_non_killer': len(suicide_non_killer),
-        'suicide_killer': len(suicide_killer),
+        'non_murder_non_killer': len(non_murder_non_killer),
+        'non_murder_killer': len(non_murder_killer),
         'cycles': cycles,
         'most_central': most_central,
     }
@@ -141,7 +135,7 @@ def _generate_network_html(
     name_to_id = {}
 
     for name, data in G.nodes(data=True):
-        # Determine node color based on death type + killer status
+        # Determine node color based on death type + killer status (simplified)
         death_type = data['death_type']
         is_killer = data['is_killer']
         kills = data['kills']
@@ -151,22 +145,16 @@ def _generate_network_html(
             title = f"{name}\nKilled {kills} | Was murdered"
         elif death_type == 'murdered' and not is_killer:
             color = '#95a5a6'  # Gray - murdered, never killed
-            title = f"{name}\nMurdered victim (never killed)"
-        elif death_type == 'accident' and is_killer:
-            color = '#e67e22'  # Dark orange - killer who died in accident
-            title = f"{name}\nKilled {kills} | Died in accident"
-        elif death_type == 'accident' and not is_killer:
-            color = '#9b59b6'  # Purple - accident, never killed
-            title = f"{name}\nDied in accident (never killed)"
-        elif death_type == 'suicide' and is_killer:
-            color = '#e74c3c'  # Red - killer who committed suicide
-            title = f"{name}\nKilled {kills} | Committed suicide"
-        elif death_type == 'suicide' and not is_killer:
-            color = '#c0392b'  # Dark red - suicide, never killed
-            title = f"{name}\nCommitted suicide (never killed)"
+            title = f"{name}\nMurdered (never killed)"
+        elif death_type == 'non_murder' and is_killer:
+            color = '#9b59b6'  # Purple - non-murder death but was a killer
+            title = f"{name}\nKilled {kills} | Died (accident/suicide)"
+        elif death_type == 'non_murder' and not is_killer:
+            color = '#3498db'  # Blue - non-murder death, never killed
+            title = f"{name}\nDied (accident/suicide, never killed)"
         else:
-            color = '#3498db'  # Blue - unknown/error
-            title = f"{name}\n[Unknown death type: {death_type}]"
+            color = '#e74c3c'  # Red - error/unknown
+            title = f"{name}\n[ERROR: Unknown death type]"
 
         # Size based on kill count (min 20, larger for killers)
         size = 20 + (kills * 10)
@@ -218,24 +206,22 @@ def _generate_network_html(
         '            <div class="legend-items">',
         '                <span class="legend-item"><span class="color-box" style="background:#f39c12"></span> Murdered + Killer</span>',
         '                <span class="legend-item"><span class="color-box" style="background:#95a5a6"></span> Murdered (never killed)</span>',
-        '                <span class="legend-item"><span class="color-box" style="background:#e67e22"></span> Accident + Killer</span>',
-        '                <span class="legend-item"><span class="color-box" style="background:#9b59b6"></span> Accident (never killed)</span>',
-        '                <span class="legend-item"><span class="color-box" style="background:#e74c3c"></span> Suicide + Killer</span>',
-        '                <span class="legend-item"><span class="color-box" style="background:#c0392b"></span> Suicide (never killed)</span>',
+        '                <span class="legend-item"><span class="color-box" style="background:#9b59b6"></span> Non-murder + Killer</span>',
+        '                <span class="legend-item"><span class="color-box" style="background:#3498db"></span> Non-murder (never killed)</span>',
         '            </div>',
         '            <p style="margin-top: 10px;"><strong>Node size</strong> = number of kills | <strong>Arrows</strong> = killer → victim (murder only)</p>',
+        '            <p style="margin-top: 5px; font-size: 0.9em; color: #666;"><em>Non-murder = Accident or Suicide (player doesn\'t need to distinguish)</em></p>',
         '        </div>',
         '',
         '        <div class="stats">',
         f'            <h3>Network Statistics</h3>',
         f'            <ul>',
+        f'                <li><strong>Total Characters:</strong> {stats["murdered_killer"] + stats["murdered_non_killer"] + stats["non_murder_killer"] + stats["non_murder_non_killer"]}</li>',
         f'                <li><strong>Total Murders:</strong> {stats["total_kills"]} (edges shown)</li>',
-        f'                <li><strong>Murdered Victims (who also killed):</strong> {stats["murdered_killer"]}</li>',
-        f'                <li><strong>Murdered Victims (never killed):</strong> {stats["murdered_non_killer"]}</li>',
-        f'                <li><strong>Accident Deaths (who also killed):</strong> {stats["accident_killer"]}</li>',
-        f'                <li><strong>Accident Deaths (never killed):</strong> {stats["accident_non_killer"]}</li>',
-        f'                <li><strong>Suicides (who also killed):</strong> {stats["suicide_killer"]}</li>',
-        f'                <li><strong>Suicides (never killed):</strong> {stats["suicide_non_killer"]}</li>',
+        f'                <li><strong>Murdered (who also killed):</strong> {stats["murdered_killer"]}</li>',
+        f'                <li><strong>Murdered (never killed):</strong> {stats["murdered_non_killer"]}</li>',
+        f'                <li><strong>Non-murder deaths (who also killed):</strong> {stats["non_murder_killer"]}</li>',
+        f'                <li><strong>Non-murder deaths (never killed):</strong> {stats["non_murder_non_killer"]}</li>',
     ]
 
     if stats['serial_killers']:

@@ -143,24 +143,22 @@
             <div class="legend-items">
                 <span class="legend-item"><span class="color-box" style="background:#f39c12"></span> Murdered + Killer</span>
                 <span class="legend-item"><span class="color-box" style="background:#95a5a6"></span> Murdered (never killed)</span>
-                <span class="legend-item"><span class="color-box" style="background:#e67e22"></span> Accident + Killer</span>
-                <span class="legend-item"><span class="color-box" style="background:#9b59b6"></span> Accident (never killed)</span>
-                <span class="legend-item"><span class="color-box" style="background:#e74c3c"></span> Suicide + Killer</span>
-                <span class="legend-item"><span class="color-box" style="background:#c0392b"></span> Suicide (never killed)</span>
+                <span class="legend-item"><span class="color-box" style="background:#9b59b6"></span> Non-murder + Killer</span>
+                <span class="legend-item"><span class="color-box" style="background:#3498db"></span> Non-murder (never killed)</span>
             </div>
             <p style="margin-top: 10px;"><strong>Node size</strong> = number of kills | <strong>Arrows</strong> = killer → victim (murder only)</p>
+            <p style="margin-top: 5px; font-size: 0.9em; color: #666;"><em>Non-murder = Accident or Suicide (player doesn't need to distinguish)</em></p>
         </div>
 
         <div class="stats">
             <h3>Network Statistics</h3>
             <ul>
+                <li><strong>Total Characters:</strong> 60</li>
                 <li><strong>Total Murders:</strong> 46 (edges shown)</li>
-                <li><strong>Murdered Victims (who also killed):</strong> 24</li>
-                <li><strong>Murdered Victims (never killed):</strong> 23</li>
-                <li><strong>Accident Deaths (who also killed):</strong> 1</li>
-                <li><strong>Accident Deaths (never killed):</strong> 4</li>
-                <li><strong>Suicides (who also killed):</strong> 4</li>
-                <li><strong>Suicides (never killed):</strong> 4</li>
+                <li><strong>Murdered (who also killed):</strong> 24</li>
+                <li><strong>Murdered (never killed):</strong> 23</li>
+                <li><strong>Non-murder deaths (who also killed):</strong> 5</li>
+                <li><strong>Non-murder deaths (never killed):</strong> 8</li>
                 <li><strong>Serial Killers:</strong>
                     <ul>
                         <li>Nikolai Kozlov: 5 kills</li>
@@ -206,21 +204,21 @@
         {
                 "id": 0,
                 "label": "Alice Wilson",
-                "title": "Alice Wilson\nMurdered victim (never killed)",
+                "title": "Alice Wilson\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 1,
                 "label": "Amara Rodriguez",
-                "title": "Amara Rodriguez\nDied in accident (never killed)",
-                "color": "#9b59b6",
+                "title": "Amara Rodriguez\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
                 "id": 2,
                 "label": "Carlos Pavlov",
-                "title": "Carlos Pavlov\nMurdered victim (never killed)",
+                "title": "Carlos Pavlov\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -234,7 +232,7 @@
         {
                 "id": 4,
                 "label": "David Sokolov",
-                "title": "David Sokolov\nMurdered victim (never killed)",
+                "title": "David Sokolov\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -269,8 +267,8 @@
         {
                 "id": 9,
                 "label": "Dr. Lucia Petrov",
-                "title": "Dr. Lucia Petrov\nKilled 2 | Committed suicide",
-                "color": "#e74c3c",
+                "title": "Dr. Lucia Petrov\nKilled 2 | Died (accident/suicide)",
+                "color": "#9b59b6",
                 "size": 40
         },
         {
@@ -290,7 +288,7 @@
         {
                 "id": 12,
                 "label": "Elena Kim",
-                "title": "Elena Kim\nMurdered victim (never killed)",
+                "title": "Elena Kim\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -304,8 +302,8 @@
         {
                 "id": 14,
                 "label": "Emma Nakamura",
-                "title": "Emma Nakamura\nCommitted suicide (never killed)",
-                "color": "#c0392b",
+                "title": "Emma Nakamura\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
@@ -325,7 +323,7 @@
         {
                 "id": 17,
                 "label": "Erik Kim",
-                "title": "Erik Kim\nMurdered victim (never killed)",
+                "title": "Erik Kim\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -339,7 +337,7 @@
         {
                 "id": 19,
                 "label": "Felipe Volkov",
-                "title": "Felipe Volkov\nMurdered victim (never killed)",
+                "title": "Felipe Volkov\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -353,49 +351,49 @@
         {
                 "id": 21,
                 "label": "Hana Thomas",
-                "title": "Hana Thomas\nKilled 2 | Committed suicide",
-                "color": "#e74c3c",
+                "title": "Hana Thomas\nKilled 2 | Died (accident/suicide)",
+                "color": "#9b59b6",
                 "size": 40
         },
         {
                 "id": 22,
                 "label": "Henrik Khan",
-                "title": "Henrik Khan\nKilled 1 | Died in accident",
-                "color": "#e67e22",
+                "title": "Henrik Khan\nKilled 1 | Died (accident/suicide)",
+                "color": "#9b59b6",
                 "size": 30
         },
         {
                 "id": 23,
                 "label": "Henrik Singh",
-                "title": "Henrik Singh\nKilled 1 | Committed suicide",
-                "color": "#e74c3c",
+                "title": "Henrik Singh\nKilled 1 | Died (accident/suicide)",
+                "color": "#9b59b6",
                 "size": 30
         },
         {
                 "id": 24,
                 "label": "Henrik Taylor",
-                "title": "Henrik Taylor\nMurdered victim (never killed)",
+                "title": "Henrik Taylor\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 25,
                 "label": "Ingrid Murphy",
-                "title": "Ingrid Murphy\nMurdered victim (never killed)",
+                "title": "Ingrid Murphy\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 26,
                 "label": "Ingrid Novak",
-                "title": "Ingrid Novak\nDied in accident (never killed)",
-                "color": "#9b59b6",
+                "title": "Ingrid Novak\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
                 "id": 27,
                 "label": "Ingrid Sato",
-                "title": "Ingrid Sato\nMurdered victim (never killed)",
+                "title": "Ingrid Sato\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -409,7 +407,7 @@
         {
                 "id": 29,
                 "label": "Ivan Sato",
-                "title": "Ivan Sato\nMurdered victim (never killed)",
+                "title": "Ivan Sato\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -423,8 +421,8 @@
         {
                 "id": 31,
                 "label": "John Jackson",
-                "title": "John Jackson\nCommitted suicide (never killed)",
-                "color": "#c0392b",
+                "title": "John Jackson\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
@@ -444,14 +442,14 @@
         {
                 "id": 34,
                 "label": "Lucia Harris",
-                "title": "Lucia Harris\nMurdered victim (never killed)",
+                "title": "Lucia Harris\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 35,
                 "label": "Magnus Davis",
-                "title": "Magnus Davis\nMurdered victim (never killed)",
+                "title": "Magnus Davis\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -465,7 +463,7 @@
         {
                 "id": 37,
                 "label": "Natasha Miller",
-                "title": "Natasha Miller\nMurdered victim (never killed)",
+                "title": "Natasha Miller\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -479,28 +477,28 @@
         {
                 "id": 39,
                 "label": "Nora Ali",
-                "title": "Nora Ali\nMurdered victim (never killed)",
+                "title": "Nora Ali\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 40,
                 "label": "Nora Patel",
-                "title": "Nora Patel\nDied in accident (never killed)",
-                "color": "#9b59b6",
+                "title": "Nora Patel\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
                 "id": 41,
                 "label": "Oliver Murphy",
-                "title": "Oliver Murphy\nMurdered victim (never killed)",
+                "title": "Oliver Murphy\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 42,
                 "label": "Oliver Nielsen",
-                "title": "Oliver Nielsen\nMurdered victim (never killed)",
+                "title": "Oliver Nielsen\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -514,14 +512,14 @@
         {
                 "id": 44,
                 "label": "Prof. Alice Berg",
-                "title": "Prof. Alice Berg\nCommitted suicide (never killed)",
-                "color": "#c0392b",
+                "title": "Prof. Alice Berg\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
                 "id": 45,
                 "label": "Prof. Amara Wilson",
-                "title": "Prof. Amara Wilson\nMurdered victim (never killed)",
+                "title": "Prof. Amara Wilson\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -535,35 +533,35 @@
         {
                 "id": 47,
                 "label": "Prof. Anton Garcia",
-                "title": "Prof. Anton Garcia\nMurdered victim (never killed)",
+                "title": "Prof. Anton Garcia\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 48,
                 "label": "Prof. Diego Wilson",
-                "title": "Prof. Diego Wilson\nMurdered victim (never killed)",
+                "title": "Prof. Diego Wilson\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 49,
                 "label": "Prof. Diego Yamamoto",
-                "title": "Prof. Diego Yamamoto\nMurdered victim (never killed)",
+                "title": "Prof. Diego Yamamoto\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 50,
                 "label": "Prof. Emma Davis",
-                "title": "Prof. Emma Davis\nMurdered victim (never killed)",
+                "title": "Prof. Emma Davis\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 51,
                 "label": "Prof. Ivan Popov",
-                "title": "Prof. Ivan Popov\nMurdered victim (never killed)",
+                "title": "Prof. Ivan Popov\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
@@ -584,15 +582,15 @@
         {
                 "id": 54,
                 "label": "Rebecca Rodriguez",
-                "title": "Rebecca Rodriguez\nMurdered victim (never killed)",
+                "title": "Rebecca Rodriguez\nMurdered (never killed)",
                 "color": "#95a5a6",
                 "size": 20
         },
         {
                 "id": 55,
                 "label": "Sakura Tanaka",
-                "title": "Sakura Tanaka\nDied in accident (never killed)",
-                "color": "#9b59b6",
+                "title": "Sakura Tanaka\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         },
         {
@@ -612,15 +610,15 @@
         {
                 "id": 58,
                 "label": "Svetlana Sato",
-                "title": "Svetlana Sato\nKilled 3 | Committed suicide",
-                "color": "#e74c3c",
+                "title": "Svetlana Sato\nKilled 3 | Died (accident/suicide)",
+                "color": "#9b59b6",
                 "size": 50
         },
         {
                 "id": 59,
                 "label": "Thomas Wilson",
-                "title": "Thomas Wilson\nCommitted suicide (never killed)",
-                "color": "#c0392b",
+                "title": "Thomas Wilson\nDied (accident/suicide, never killed)",
+                "color": "#3498db",
                 "size": 20
         }
 ]);
