@@ -1,9 +1,11 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Runs on pushes to your branch
+  # Runs on pushes to main or your feature branch
   push:
-    branches: ["claude/explore-repo-structure-01HDcxhjhJ5ZrnHrUG5FhGaQ"]
+    branches:
+      - main
+      - claude/explore-repo-structure-01HDcxhjhJ5ZrnHrUG5FhGaQ
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
