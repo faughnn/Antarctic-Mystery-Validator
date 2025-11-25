@@ -294,15 +294,17 @@ def _generate_relationship_html(
         # Node size based on hierarchy tier (higher tier = larger)
         size = 40 - (data['tier'] * 8)  # Tier 1=32, Tier 4=8
 
-        # Node shape based on tier
-        shape = 'box' if data['tier'] <= 2 else 'dot'
+        # Node shape based on tier (leadership gets boxes)
+        shape = 'box' if data['tier'] <= 1 else 'dot'
 
-        # Border color based on status
-        border_color = '#e74c3c' if data['is_dead'] else '#27ae60'
+        # Border color shows department (not death status since everyone dies)
+        dept_colors = _get_department_colors()
+        dept = data['department']
+        border_color = dept_colors.get(dept, '#95a5a6')
         border_width = 3
 
         # Build title (tooltip)
-        title = f"{name}\n{data['role']}\n{data['nationality']}\nDept: {data['department']}"
+        title = f"{name}\n{data['role']}\nTier {data['tier']} - {data['department']}\nNationality: {data['nationality']}"
         if data['is_dead']:
             title += f"\n☠ Died in scene {data['death_scene']}"
 
@@ -525,17 +527,23 @@ def _build_html_template(
             </div>
 
             <div class="legend-section">
-                <h4>Node Borders</h4>
-                <div><span class="color-box" style="background:#27ae60"></span>Alive</div>
-                <div><span class="color-box" style="background:#e74c3c"></span>Dead</div>
+                <h4>Node Borders (Department)</h4>
+                <div><span class="color-box" style="background:#2ecc71"></span>Medical</div>
+                <div><span class="color-box" style="background:#3498db"></span>Science</div>
+                <div><span class="color-box" style="background:#e67e22"></span>Engineering</div>
+                <div><span class="color-box" style="background:#e74c3c"></span>Security</div>
+                <div><span class="color-box" style="background:#9b59b6"></span>Communications</div>
+                <div><span class="color-box" style="background:#34495e"></span>Administration</div>
+                <div><span class="color-box" style="background:#95a5a6"></span>Other</div>
             </div>
 
             <div class="legend-section">
-                <h4>Node Size & Shape</h4>
-                <div>■ Large Square = Leadership</div>
-                <div>■ Small Square = Dept Heads</div>
-                <div>● Large Circle = Senior Staff</div>
-                <div>● Small Circle = Staff</div>
+                <h4>Hierarchy (Size & Shape)</h4>
+                <div>■ Large Box = Station Leadership (Tier 1)</div>
+                <div>● Large Circle = Dept Heads/Professors (Tier 2)</div>
+                <div>● Medium Circle = Doctors/Specialists (Tier 3)</div>
+                <div>● Small Circle = General Staff (Tier 4)</div>
+                <p style="margin-top:8px; font-size:0.9em; font-style:italic;">In Org Chart view: Leadership at top → Staff below</p>
             </div>
 
             <div class="legend-section">
@@ -568,10 +576,12 @@ def _build_html_template(
                 improvedLayout: true,
                 hierarchical: {
                     enabled: false,
-                    direction: 'UD',
+                    direction: 'UD',  // Up-down (leadership at top)
                     sortMethod: 'directed',
-                    nodeSpacing: 200,
-                    levelSeparation: 150,
+                    nodeSpacing: 250,  // Horizontal spacing between nodes
+                    levelSeparation: 200,  // Vertical spacing between tiers
+                    blockShifting: true,  // Better department separation
+                    edgeMinimization: true,  // Cleaner edge routing
                 }
             },
             interaction: {
