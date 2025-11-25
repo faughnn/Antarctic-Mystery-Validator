@@ -483,17 +483,26 @@ def _generate_org_chart_html(
             });
 
             // Draw department backgrounds (on top of tier bands)
-            Object.keys(departmentGroups).forEach(dept => {
-                const positions = departmentGroups[dept];
-                if (positions.length === 0) return;
+            // Use fixed column boundaries to prevent overlap
+            const departmentOrder = ['Administration', 'Medical', 'Science', 'Engineering', 'Security', 'Communications', 'Logistics', 'Other'];
+            const deptSpacing = 400;  // Must match the spacing used for positioning nodes
 
-                const padding = 50;
-                const xs = positions.map(p => p.x);
+            departmentOrder.forEach((dept, deptIndex) => {
+                // Check if this department has any people
+                if (!departmentGroups[dept] || departmentGroups[dept].length === 0) return;
+
+                const positions = departmentGroups[dept];
+
+                // Calculate fixed column boundaries for this department
+                const deptBaseX = deptIndex * deptSpacing - (departmentOrder.length * deptSpacing / 2);
+                const columnWidth = deptSpacing * 0.85;  // 85% of spacing to leave gap between columns
+                const minX = deptBaseX - (columnWidth / 2);
+                const maxX = deptBaseX + (columnWidth / 2);
+
+                // Get Y boundaries from actual node positions
                 const ys = positions.map(p => p.y);
-                const minX = Math.min(...xs) - padding;
-                const maxX = Math.max(...xs) + padding;
-                const minY = Math.min(...ys) - padding;
-                const maxY = Math.max(...ys) + padding;
+                const minY = Math.min(...ys) - 60;
+                const maxY = Math.max(...ys) + 60;
 
                 // Draw rounded rectangle background
                 ctx.fillStyle = departmentColors[dept] || 'rgba(200, 200, 200, 0.15)';
@@ -520,7 +529,7 @@ def _generate_org_chart_html(
                 ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
-                ctx.fillText(dept, (minX + maxX) / 2, minY - 10);
+                ctx.fillText(dept, deptBaseX, minY - 10);
             });
         });
 
