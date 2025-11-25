@@ -321,7 +321,6 @@ def _generate_relationship_html(
             'borderWidth': border_width,
             'font': {'size': 12},
             'group': dept,  # Group nodes by department for visual clustering
-            'level': data['tier'],  # Explicit hierarchy level for better layout
         })
 
     # Convert edges to vis.js format
