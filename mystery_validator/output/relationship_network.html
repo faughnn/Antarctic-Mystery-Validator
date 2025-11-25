@@ -463,27 +463,27 @@
         }
 
         function showAllEdges() {
-            edges.forEach(edge => edges.update({{id: edge.id, hidden: false}}));
+            edges.forEach(edge => edges.update({id: edge.id, hidden: false}));
         }
 
         function hideAllEdges() {
-            edges.forEach(edge => edges.update({{id: edge.id, hidden: true}}));
+            edges.forEach(edge => edges.update({id: edge.id, hidden: true}));
         }
 
         function showEdgeGroup(group) {
-            edges.forEach(edge => {{
-                if (edge.group === group) {{
-                    edges.update({{id: edge.id, hidden: false}});
-                }}
-            }});
+            edges.forEach(edge => {
+                if (edge.group === group) {
+                    edges.update({id: edge.id, hidden: false});
+                }
+            });
         }
 
         function hideEdgeGroup(group) {
-            edges.forEach(edge => {{
-                if (edge.group === group) {{
-                    edges.update({{id: edge.id, hidden: true}});
-                }}
-            }});
+            edges.forEach(edge => {
+                if (edge.group === group) {
+                    edges.update({id: edge.id, hidden: true});
+                }
+            });
         }
     </script>
 </body>
