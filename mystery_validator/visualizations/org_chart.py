@@ -347,10 +347,10 @@ def _generate_org_chart_html(
             3: 100,
             4: 300    // Bottom
         };
-        const deptSpacing = 400;  // Horizontal spacing between departments
-        const nodeSpacing = 120;   // Spacing between nodes in same dept/tier
+        const nodeSpacing = 100;   // Spacing between nodes in same dept/tier
 
-        // Group nodes by department and tier
+        // First pass: Calculate how many nodes each department has in each tier
+        const deptTierCounts = {};
         const deptTierGroups = {};
         nodes.forEach(node => {
             const dept = node.group;
@@ -360,22 +360,50 @@ def _generate_org_chart_html(
                 deptTierGroups[key] = [];
             }
             deptTierGroups[key].push(node);
+
+            if (!deptTierCounts[dept]) {
+                deptTierCounts[dept] = 0;
+            }
+            // Track max nodes in any single tier for this department
+            deptTierCounts[dept] = Math.max(deptTierCounts[dept], deptTierGroups[key].length);
         });
 
-        // Position each node
+        // Calculate required width for each department
+        const deptWidths = {};
+        departmentOrder.forEach(dept => {
+            const maxNodesInTier = deptTierCounts[dept] || 1;
+            // Width = nodes * spacing + padding on both sides
+            const requiredWidth = maxNodesInTier * nodeSpacing + 80;
+            deptWidths[dept] = requiredWidth;
+        });
+
+        // Calculate department X positions ensuring no overlap
+        const deptBaseX = {};
+        let currentX = 0;
+        departmentOrder.forEach(dept => {
+            deptBaseX[dept] = currentX;
+            currentX += deptWidths[dept] + 60; // Add 60px gap between departments
+        });
+
+        // Center the entire chart
+        const totalWidth = currentX - 60; // Subtract last gap
+        const offset = -totalWidth / 2;
+        Object.keys(deptBaseX).forEach(dept => {
+            deptBaseX[dept] += offset + deptWidths[dept] / 2; // Center of department
+        });
+
+        // Position each node within its department
         nodes.forEach(node => {
             const dept = node.group;
             const tier = node.level;
-            const deptIndex = departmentOrder.indexOf(dept);
             const key = `${dept}_${tier}`;
             const groupNodes = deptTierGroups[key];
             const indexInGroup = groupNodes.indexOf(node);
             const groupSize = groupNodes.length;
 
-            // X position: department base + offset for multiple nodes in same dept/tier
-            const deptBaseX = deptIndex * deptSpacing - (departmentOrder.length * deptSpacing / 2);
+            // X position: centered within department, spread horizontally
             const offsetX = (indexInGroup - (groupSize - 1) / 2) * nodeSpacing;
-            const x = deptBaseX + offsetX;
+            const x = deptBaseX[dept] + offsetX;
 
             // Y position: based on tier
             const y = tierY[tier];
@@ -483,24 +511,21 @@ def _generate_org_chart_html(
             });
 
             // Draw department backgrounds (on top of tier bands)
-            // Use fixed column boundaries to prevent overlap
+            // Use dynamic widths that fit all nodes, ensuring no overlap
             const departmentOrder = ['Administration', 'Medical', 'Science', 'Engineering', 'Security', 'Communications', 'Logistics', 'Other'];
-            const deptSpacing = 400;  // Must match the spacing used for positioning nodes
 
-            departmentOrder.forEach((dept, deptIndex) => {
+            departmentOrder.forEach((dept) => {
                 // Check if this department has any people
                 if (!departmentGroups[dept] || departmentGroups[dept].length === 0) return;
 
                 const positions = departmentGroups[dept];
 
-                // Calculate fixed column boundaries for this department
-                const deptBaseX = deptIndex * deptSpacing - (departmentOrder.length * deptSpacing / 2);
-                const columnWidth = deptSpacing * 0.85;  // 85% of spacing to leave gap between columns
-                const minX = deptBaseX - (columnWidth / 2);
-                const maxX = deptBaseX + (columnWidth / 2);
-
-                // Get Y boundaries from actual node positions
+                // Get actual bounding box from node positions (with generous padding)
+                const xs = positions.map(p => p.x);
                 const ys = positions.map(p => p.y);
+                const padding = 50;
+                const minX = Math.min(...xs) - padding;
+                const maxX = Math.max(...xs) + padding;
                 const minY = Math.min(...ys) - 60;
                 const maxY = Math.max(...ys) + 60;
 
@@ -524,12 +549,12 @@ def _generate_org_chart_html(
                 ctx.fill();
                 ctx.stroke();
 
-                // Draw department label at top
+                // Draw department label at top center of box
                 ctx.fillStyle = departmentColors[dept].replace('0.15', '0.9') || 'rgba(52, 73, 94, 0.9)';
                 ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
-                ctx.fillText(dept, deptBaseX, minY - 10);
+                ctx.fillText(dept, (minX + maxX) / 2, minY - 10);
             });
         });
 
