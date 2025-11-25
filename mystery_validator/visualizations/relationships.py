@@ -321,6 +321,7 @@ def _generate_relationship_html(
             'borderWidth': border_width,
             'font': {'size': 12},
             'group': dept,  # Group nodes by department for visual clustering
+            'level': data['tier'],  # Explicit hierarchy level for better layout
         })
 
     # Convert edges to vis.js format
@@ -455,7 +456,7 @@ def _build_html_template(
 
             <h3>Show/Hide Edges:</h3>
             <div class="checkbox-group">
-                <label><input type="checkbox" id="showProfessional" checked> Professional</label>
+                <label><input type="checkbox" id="showProfessional" checked> Reporting (boss→subordinate)</label>
                 <label><input type="checkbox" id="showFamily" checked> Family</label>
                 <label><input type="checkbox" id="showKiller" checked> Killer</label>
             </div>
@@ -550,7 +551,7 @@ def _build_html_template(
             <div class="legend-section">
                 <h4>Edge Types</h4>
                 <div><span style="color:#e74c3c;">—</span> Family Connection</div>
-                <div><span style="color:#3498db;">—</span> Professional Hierarchy</div>
+                <div><span style="color:#3498db;">—</span> Reporting Relationship (boss → subordinate)</div>
                 <div><span style="color:#c0392b;">⤍</span> Killer → Victim</div>
             </div>
         </div>
@@ -579,10 +580,13 @@ def _build_html_template(
                     enabled: false,
                     direction: 'UD',  // Up-down (leadership at top)
                     sortMethod: 'directed',
-                    nodeSpacing: 250,  // Horizontal spacing between nodes
-                    levelSeparation: 200,  // Vertical spacing between tiers
+                    nodeSpacing: 350,  // Increased horizontal spacing to prevent overlap
+                    levelSeparation: 250,  // Vertical spacing between tiers
+                    treeSpacing: 400,  // Spacing between separate department trees
                     blockShifting: true,  // Better department separation
                     edgeMinimization: true,  // Cleaner edge routing
+                    parentCentralization: false,  // Allow separate trees per department
+                    shakeTowards: 'leaves',  // Push nodes toward leaves (downward)
                 }
             },
             interaction: {
