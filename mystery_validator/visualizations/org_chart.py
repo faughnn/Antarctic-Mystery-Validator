@@ -316,20 +316,11 @@ def _generate_org_chart_html(
         const options = {
             layout: {
                 hierarchical: {
-                    enabled: true,
-                    direction: 'UD',  // Up-down (leadership at top)
-                    sortMethod: 'directed',
-                    nodeSpacing: 200,  // Horizontal spacing within tier
-                    levelSeparation: 250,  // Vertical spacing between tiers (bands)
-                    treeSpacing: 250,  // Spacing between department trees
-                    blockShifting: true,
-                    edgeMinimization: true,
-                    parentCentralization: false,
-                    shakeTowards: 'leaves'
+                    enabled: false  // Disabled - we position nodes manually
                 }
             },
             physics: {
-                enabled: false  // Disable physics for stable hierarchical layout
+                enabled: false  // Disable physics for manual positioning
             },
             interaction: {
                 hover: true,
@@ -347,6 +338,51 @@ def _generate_org_chart_html(
         };
 
         const network = new vis.Network(container, data, options);
+
+        // Manually position nodes by tier and department to prevent overlap
+        const departmentOrder = ['Administration', 'Medical', 'Science', 'Engineering', 'Security', 'Communications', 'Logistics', 'Other'];
+        const tierY = {
+            1: -300,  // Top
+            2: -100,
+            3: 100,
+            4: 300    // Bottom
+        };
+        const deptSpacing = 400;  // Horizontal spacing between departments
+        const nodeSpacing = 120;   // Spacing between nodes in same dept/tier
+
+        // Group nodes by department and tier
+        const deptTierGroups = {};
+        nodes.forEach(node => {
+            const dept = node.group;
+            const tier = node.level;
+            const key = `${dept}_${tier}`;
+            if (!deptTierGroups[key]) {
+                deptTierGroups[key] = [];
+            }
+            deptTierGroups[key].push(node);
+        });
+
+        // Position each node
+        nodes.forEach(node => {
+            const dept = node.group;
+            const tier = node.level;
+            const deptIndex = departmentOrder.indexOf(dept);
+            const key = `${dept}_${tier}`;
+            const groupNodes = deptTierGroups[key];
+            const indexInGroup = groupNodes.indexOf(node);
+            const groupSize = groupNodes.length;
+
+            // X position: department base + offset for multiple nodes in same dept/tier
+            const deptBaseX = deptIndex * deptSpacing - (departmentOrder.length * deptSpacing / 2);
+            const offsetX = (indexInGroup - (groupSize - 1) / 2) * nodeSpacing;
+            const x = deptBaseX + offsetX;
+
+            // Y position: based on tier
+            const y = tierY[tier];
+
+            // Update node position
+            network.moveNode(node.id, x, y);
+        });
 
         // Department clustering configuration
         const departmentColors = {
