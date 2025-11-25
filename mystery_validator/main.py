@@ -104,7 +104,7 @@ def main():
 
     # Generate HTML report
     from reports import generate_html_report
-    output_dir = Path(__file__).parent / "output"
+    output_dir = Path(__file__).parent.parent / "site"
     output_dir.mkdir(exist_ok=True)
     report_path = output_dir / "validation_report.html"
     generate_html_report(
@@ -238,7 +238,7 @@ def main():
     # Generate visualizations
     print()
     print("Generating visualizations...")
-    output_dir = Path(__file__).parent / "output"
+    output_dir = Path(__file__).parent.parent / "site"
     output_dir.mkdir(exist_ok=True)
 
     matrix_path = output_dir / "character_scene_matrix.html"
