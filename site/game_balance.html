@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Balance - Antarctic Mystery</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+
+        h2 {
+            color: #34495e;
+            margin: 40px 0 20px 0;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .metric-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-note {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .stats-section {
+            background: #ecf0f1;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+
+        .stat-group {
+            margin-bottom: 30px;
+        }
+
+        .stat-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-group h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .stat-group ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .stat-group li {
+            padding: 8px 0;
+            color: #34495e;
+            font-size: 1.05em;
+        }
+
+        .stat-group li strong {
+            color: #2c3e50;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .back-link {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .back-link:hover {
+            background: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-card {
+                padding: 20px;
+            }
+
+            .metric-number {
+                font-size: 2em;
+            }
+        }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Game Balance Analysis</h1>
+        <p class="subtitle">Overall Statistics & Distribution Metrics</p>
+
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-number">60</div>
+                <div class="metric-label">Characters</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">50</div>
+                <div class="metric-label">Scenes</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">1481</div>
+                <div class="metric-label">Total Clues</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">24.7</div>
+                <div class="metric-label">Avg Clues/Character</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Difficulty Distribution -->
+            <div class="chart-card">
+                <h3>Difficulty Distribution</h3>
+                <canvas id="difficultyChart"></canvas>
+                <div class="chart-note">
+                    Based on total clue count per character
+                </div>
+            </div>
+
+            <!-- Clue Type Distribution -->
+            <div class="chart-card">
+                <h3>Clue Type Distribution</h3>
+                <canvas id="clueTypeChart"></canvas>
+                <div class="chart-note">
+                    Total clues across all characters by type
+                </div>
+            </div>
+
+            <!-- Scene Complexity -->
+            <div class="chart-card">
+                <h3>Scene Complexity</h3>
+                <canvas id="complexityChart"></canvas>
+                <div class="chart-note">
+                    Number of characters per scene
+                </div>
+            </div>
+
+            <!-- Clue Averages -->
+            <div class="chart-card">
+                <h3>Average Clues per Character</h3>
+                <canvas id="averagesChart"></canvas>
+                <div class="chart-note">
+                    Average number of each clue type
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-section">
+            <h2>Detailed Statistics</h2>
+
+            <div class="stat-group">
+                <h3>Character Appearances</h3>
+                <ul>
+                    <li><strong>Minimum:</strong> 1 scenes - Oliver Murphy</li>
+                    <li><strong>Maximum:</strong> 8 scenes - Alice Wilson</li>
+                    <li><strong>Average:</strong> 4.9 scenes per character</li>
+                </ul>
+            </div>
+
+            <div class="stat-group">
+                <h3>Clue Distribution</h3>
+                <ul>
+                    <li><strong>Minimum:</strong> 7 clues (hardest character)</li>
+                    <li><strong>Maximum:</strong> 46 clues (easiest character)</li>
+                    <li><strong>Average:</strong> 24.7 clues per character</li>
+                    <li><strong>Total:</strong> 1481 clues across all characters</li>
+                </ul>
+            </div>
+
+            <div class="stat-group">
+                <h3>Design Notes</h3>
+                <ul>
+                    <li>More clues = easier to identify (more information to work with)</li>
+                    <li>Fewer clues = harder to identify (requires deduction with limited information)</li>
+                    <li>Players must combine multiple clues to deduce WHO, HOW, and WHO KILLED</li>
+                    <li>Single clues don't solve the puzzle - cross-referencing is required</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Back Link -->
+        <div class="footer">
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        const stats = {"total_characters": 60, "total_scenes": 50, "total_clues": 1481, "difficulty_dist": {"VERY EASY": 15, "EASY": 9, "MEDIUM": 12, "HARD": 14, "VERY HARD": 10}, "clue_totals": {"visual": 560, "dialogue": 214, "contextual": 332, "relationship": 104, "role": 271}, "clue_averages": {"visual": 9.333333333333334, "dialogue": 3.566666666666667, "contextual": 5.533333333333333, "relationship": 1.7333333333333334, "role": 4.516666666666667}, "complexity_counts": {"OVERWHELMING": 8, "COMPLEX": 12, "BALANCED": 18, "SIMPLE": 12}, "min_appearances": 1, "max_appearances": 8, "avg_appearances": 4.916666666666667, "min_char": "Oliver Murphy", "max_char": "Alice Wilson", "min_clues": 7, "max_clues": 46, "avg_clues": 24.683333333333334};
+
+        // Difficulty Distribution Chart
+        new Chart(document.getElementById('difficultyChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Very Hard', 'Hard', 'Medium', 'Easy', 'Very Easy'],
+                datasets: [{
+                    label: 'Number of Characters',
+                    data: [
+                        stats.difficulty_dist['VERY HARD'],
+                        stats.difficulty_dist['HARD'],
+                        stats.difficulty_dist['MEDIUM'],
+                        stats.difficulty_dist['EASY'],
+                        stats.difficulty_dist['VERY EASY']
+                    ],
+                    backgroundColor: ['#e74c3c', '#e67e22', '#f39c12', '#3498db', '#2ecc71']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 2 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Clue Type Distribution Chart
+        new Chart(document.getElementById('clueTypeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Visual', 'Dialogue', 'Contextual', 'Relationship', 'Role'],
+                datasets: [{
+                    data: [
+                        stats.clue_totals.visual,
+                        stats.clue_totals.dialogue,
+                        stats.clue_totals.contextual,
+                        stats.clue_totals.relationship,
+                        stats.clue_totals.role
+                    ],
+                    backgroundColor: ['#3498db', '#9b59b6', '#e67e22', '#e74c3c', '#2ecc71']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Scene Complexity Chart
+        new Chart(document.getElementById('complexityChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Simple\n(1-2)', 'Balanced\n(3-6)', 'Complex\n(7-10)', 'Overwhelming\n(11+)'],
+                datasets: [{
+                    label: 'Number of Scenes',
+                    data: [
+                        stats.complexity_counts['SIMPLE'] || 0,
+                        stats.complexity_counts['BALANCED'] || 0,
+                        stats.complexity_counts['COMPLEX'] || 0,
+                        stats.complexity_counts['OVERWHELMING'] || 0
+                    ],
+                    backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 5 }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Clue Averages Chart
+        new Chart(document.getElementById('averagesChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Visual', 'Dialogue', 'Context', 'Relations', 'Role'],
+                datasets: [{
+                    label: 'Average per Character',
+                    data: [
+                        stats.clue_averages.visual,
+                        stats.clue_averages.dialogue,
+                        stats.clue_averages.contextual,
+                        stats.clue_averages.relationship,
+                        stats.clue_averages.role
+                    ],
+                    backgroundColor: '#3498db'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

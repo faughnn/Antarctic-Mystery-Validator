@@ -252,6 +252,24 @@ def main():
 
     org_chart_path = output_dir / "org_chart.html"
     visualizations.generate_org_chart(characters, org_chart_path)
+
+    validation_dashboard_path = output_dir / "validation_dashboard.html"
+    visualizations.generate_validation_dashboard(validation_results, validation_dashboard_path)
+
+    character_analysis_path = output_dir / "character_analysis.html"
+    visualizations.generate_character_analysis(clue_analysis, appearance_analysis, character_analysis_path)
+
+    game_balance_path = output_dir / "game_balance.html"
+    total_scenes = len(set(e.scene_number for e in scene_evidence))
+    visualizations.generate_game_balance(
+        difficulty_groups,
+        clue_analysis,
+        scene_complexity,
+        appearance_analysis,
+        len(characters),
+        total_scenes,
+        game_balance_path
+    )
     print()
 
     # Return exit code
