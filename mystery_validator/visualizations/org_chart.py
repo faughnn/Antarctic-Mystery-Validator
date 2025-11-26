@@ -449,6 +449,7 @@ def _generate_org_chart_html(
             // Group nodes by tier and department
             const tierGroups = { 1: [], 2: [], 3: [], 4: [] };
             const departmentGroups = {};
+            const allPositions = []; // Track all positions for calculating overall bounds
 
             nodes.forEach(node => {
                 const pos = network.getPositions([node.id])[node.id];
@@ -460,6 +461,8 @@ def _generate_org_chart_html(
                         dept: node.group,
                         size: node.size || 20
                     };
+
+                    allPositions.push(nodeData);
 
                     // Add to tier group
                     if (tierGroups[node.level]) {
@@ -474,7 +477,12 @@ def _generate_org_chart_html(
                 }
             });
 
-            // Draw horizontal bands for each tier
+            // Calculate overall X boundaries for all tier bands (so they align)
+            const allXs = allPositions.map(p => p.x);
+            const overallMinX = Math.min(...allXs) - 200;
+            const overallMaxX = Math.max(...allXs) + 200;
+
+            // Draw horizontal bands for each tier (all with same X boundaries)
             Object.keys(tierGroups).forEach(tier => {
                 const positions = tierGroups[tier];
                 if (positions.length === 0) return;
@@ -484,18 +492,9 @@ def _generate_org_chart_html(
                 const minY = Math.min(...ys) - 80;
                 const maxY = Math.max(...ys) + 80;
 
-                // Get canvas bounds for full-width band
-                let minX, maxX;
-                try {
-                    const bounds = network.getBoundingBox();
-                    minX = bounds.left - 200;
-                    maxX = bounds.right + 200;
-                } catch (e) {
-                    // Fallback to calculating from all positions
-                    const allXs = positions.map(p => p.x);
-                    minX = Math.min(...allXs) - 500;
-                    maxX = Math.max(...allXs) + 500;
-                }
+                // Use overall X boundaries so all tier bands are left-aligned
+                const minX = overallMinX;
+                const maxX = overallMaxX;
 
                 // Draw full-width horizontal band
                 ctx.fillStyle = tierBandColors[tierNum - 1];
